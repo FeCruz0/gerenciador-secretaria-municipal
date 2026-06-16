@@ -7,8 +7,8 @@
       <i class="fab fa-whatsapp"></i> 22 99758-7289
     </div>
     <div class="social-links float-end">
-      <a href="https://www.facebook.com/PrefeituraArraialDoCabo" class="facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com/semas.ac/" class="instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/" class="facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/" class="instagram"><i class="fab fa-instagram"></i></a>
     </div>
   </div>
 </section>

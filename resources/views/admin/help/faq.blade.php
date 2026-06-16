@@ -582,7 +582,7 @@
                 data-bs-parent="#faq-rules-qna"
               >
                 <div class="accordion-body">
-                  Para criar Regras entre em contato com o CODE.
+                  Para criar Regras entre em contato com o administrador.
                 </div>
               </div>
             </div>

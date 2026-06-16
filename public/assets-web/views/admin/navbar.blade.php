@@ -6,10 +6,10 @@
     </button>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-            <a href="https://www.facebook.com/PrefeituraArraialDoCabo" target="_blank" class="facebook"><i class="fab fa-facebook-f nav-link"></i></a>
+            <a href="https://www.facebook.com/" target="_blank" class="facebook"><i class="fab fa-facebook-f nav-link"></i></a>
         </li>
         <li class="nav-item">
-            <a href="https://www.instagram.com/prefeituradearraialdocabo/" target="_blank" class="instagram"><i class="fab fa-instagram nav-link"></i></a>
+            <a href="https://www.instagram.com/" target="_blank" class="instagram"><i class="fab fa-instagram nav-link"></i></a>
         </li>
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"

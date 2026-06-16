@@ -714,8 +714,8 @@ class DefaultInserts extends Migration
             Model::withoutEvents(function () {
                 User::create([
                         'name' => 'Admin',
-                        'email' => 'code.dev@arraial.rj.gov.br',
-                        'password' => Hash::make('@135devcode')
+                        'email' => 'admin@admin.com',
+                        'password' => Hash::make('#135admin')
                     ]
                 );
             });

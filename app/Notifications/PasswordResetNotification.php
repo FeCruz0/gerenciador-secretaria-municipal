@@ -87,7 +87,7 @@ class PasswordResetNotification extends Notification
             ->subject('Resetar sua senha')
             ->line('Você solicitou uma nova senha de acesso')
             ->action('Resetar senha', $url)
-            ->salutation('Att, CODE PMAC')
+            ->salutation('Att, administrador')
             ->line('Esse link expira em 24 horas.')
             ->line('Se você não solicitou esse link, desconsidere.');
     }

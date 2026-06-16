@@ -19,7 +19,7 @@ data-textdirection="{{ env('MIX_CONTENT_DIRECTION') === 'rtl' ? 'rtl' : 'ltr' }}
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="description" content="Painel Administrativo">
   <meta name="keywords" content="">
-  <meta name="author" content="CODE">
+  <meta name="author" content="github.com/FeCruz0">
   <title>Painel Administrativo</title>
   <link rel="apple-touch-icon" href="{{asset('images/ico/apple-icon-120.png')}}">
   <link rel="shortcut icon" type="image/x-icon" href="{{asset('images/logo/favicon.ico')}}">

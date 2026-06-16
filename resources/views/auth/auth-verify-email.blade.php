@@ -6,7 +6,7 @@ $configData = Helper::applClasses();
 @section('title', 'Verificar E-mail')
 
 @section('page-style')
-  <link rel="stylesheet" href="{{ asset(mix('css/base/pages/authentication.css')) }}">
+  <link rel="stylesheet" href="{{ asset('css/base/pages/authentication.css') }}">
 @endsection
 
 @section('content')

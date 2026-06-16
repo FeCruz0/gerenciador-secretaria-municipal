@@ -285,7 +285,7 @@ rel='stylesheet' type='text/css'>
         </header>
 
         <footer class="o-footer " style="clear:both">
-            <img src="images/logo/logo-code-pdf.png" class="logo-footer" alt="CODE">
+            <img src="images/logo/logo-code-pdf.png" class="logo-footer" alt="github.com/FeCruz0">
         </footer>
 
         <main class="o-main" style="clear:both;">

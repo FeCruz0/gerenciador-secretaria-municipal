@@ -6,7 +6,7 @@ $configData = Helper::applClasses();
 @section('title', 'Two Steps')
 
 @section('page-style')
-<link rel="stylesheet" href="{{ asset(mix('css/base/pages/authentication.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/base/pages/authentication.css') }}">
 @endsection
 
 @section('content')
@@ -59,9 +59,9 @@ $configData = Helper::applClasses();
 @endsection
 
 @section('vendor-script')
-<script src="{{asset(mix('vendors/js/forms/cleave/cleave.min.js'))}}"></script>
+<script src="{{asset('vendors/js/forms/cleave/cleave.min.js')}}"></script>
 @endsection
 
 @section('page-script')
-<script src="{{asset(mix('js/scripts/pages/auth-two-steps.js'))}}"></script>
+<script src="{{asset('js/scripts/pages/auth-two-steps.js')}}"></script>
 @endsection

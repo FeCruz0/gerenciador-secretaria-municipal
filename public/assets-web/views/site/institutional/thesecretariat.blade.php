@@ -7,17 +7,14 @@
             <h2>A Secretaria</h2>
         </div>
         <div class="row">
-            <p>A Secretaria Municipal do Ambiente e Saneamento faz parte da Administração Pública Direta Municipal 
+            <p>A Secretaria faz parte da Administração Pública Direta Municipal 
             vinculada à Prefeitura Municipal.
             </p>
+            
             <p>Possui a competência de propor e executar as políticas municipais de meio ambiente e saneamento 
-            adotadas pelos poderes Executivo e Legislativo do Município de Arraial do Cabo. 
+            adotadas pelos poderes Executivo e Legislativo do Município. 
             </p>
-            <p>A Secretaria integra o Sistema Nacional do Meio Ambiente (SISNAMA), o Sistema Nacional de 
-            Gerenciamento de Recursos Hídricos (SNGRH), o Sistema Estadual de Gerenciamento de Recursos 
-            Hídricos (SEGRH) e o Sistema Nacional de Unidades de Conservação (SNUC) e o Sistema Nacional de 
-            Saneamento Básico.
-            </p>
+            
             <p>Sendo orientada por um conjunto de normas de conduta que, manifestadas na missão, visão e 
             valores determinam o seu comportamento funcional.
             </p>

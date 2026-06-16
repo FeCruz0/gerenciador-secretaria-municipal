@@ -98,7 +98,7 @@ Route::post('unidade_social_media_remove', 'App\Http\Controllers\UnitController@
 Route::post('unidade_social_media_update', 'App\Http\Controllers\UnitController@unidade_social_media_update')->name('unidade_social_media_update');
 Route::get('unidade_social_media_delete/{social_media}', 'App\Http\Controllers\UnitController@unidade_social_media_delete')->name('unidade_social_media_delete');
 
-/* Route CODE não pode alterar*/
+/* Route admin não pode alterar*/
 Route::group(['middleware' => ['auth']], function () {
 
     //Dashboard
@@ -234,7 +234,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('entry_index', [EntryReportsController::class, 'entry_index'])->name('entry_index');
 
 });
-/* Route CODE */
+/* Route admin */
 
 /* Route Usuarios */
 Route::group(['middleware' => ['auth'], 'prefix' => 'usuarios'], function () {

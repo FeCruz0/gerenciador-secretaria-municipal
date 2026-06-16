@@ -87,7 +87,7 @@ class PasswordCreateNotification extends Notification
             ->subject('Crie sua senha de acesso')
             ->line('Foi criado um usuário para você em nosso sistema, agora você só precisa criar uma senha.')
             ->action('Criar senha', $url)
-            ->salutation('Att, CODE PMAC')
+            ->salutation('Att, administrador')
             ->line('Esse link expira em 24 horas.')
             ->line('Se você não solicitou esse link, desconsidere.');
     }
