@@ -12,6 +12,7 @@ use App\Services\DirectHireItemUpdateService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class DirectHireItemController extends Controller
 {
@@ -26,7 +27,7 @@ class DirectHireItemController extends Controller
         DirectHireItemRequest $request
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -37,7 +38,6 @@ class DirectHireItemController extends Controller
             return redirect()->back();
         }catch (\Throwable $throwable){
             DB::rollBack();
-            dd($throwable);
             flash('Erro Cadastrar!')->error();
             return redirect()->back()->withInput();
         }
@@ -46,17 +46,21 @@ class DirectHireItemController extends Controller
     public function show($item_id)
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $unit = Unit::where('web', true)->first();
             $item_selected = $this->directHireItemService->show($item_id);
-            $directHire_id = $item_selected->directHire_id;
+            $directHire_id = $item_selected->direct_hire_id;
             $directHire = DirectHire::find($directHire_id);
-            return view('admin.DirectHire.Item_show', compact('item_selected', 'DirectHire', 'unit'));
+            return Inertia::render('DirectHire/ItemShow', [
+                'item_selected' => $item_selected,
+                'directHire' => $directHire,
+                'unit' => $unit
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
+            flash('Erro ao buscar o Item!')->error();
             return redirect()->back()->withInput();
         }
     }
@@ -65,7 +69,7 @@ class DirectHireItemController extends Controller
         DirectHireItemRequest $request, $item_id
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -84,18 +88,18 @@ class DirectHireItemController extends Controller
     public function destroy($item)
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $for_delete = DirectHireItem::find($item);
-            $directHire_id = $for_delete->directHire_id;
+            $directHire_id = $for_delete->direct_hire_id;
             $directHire = DirectHire::find($directHire_id);
             $for_delete->delete();
             flash('Item deletado com sucesso!')->success();
             return redirect('/contratacoes_diretas/' . $directHire->id);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar a Item!')->error();
+            flash('Erro ao deletar o Item!')->error();
             return redirect()->back()->withInput();
         }
     }

@@ -34,33 +34,34 @@ class DirectHireWinnerController extends Controller
         protected DirectHireItemUpdateService $direct_hireItemUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            $pageConfigs = ['pageHeader' => false];
             $unit = Unit::where('web', true)->first();
 
             $people = People::whereDoesntHave('departaments')
                                         ->latest()
                                         ->get();
-            return view('admin.directHire.winner_index', ['pageConfigs' => $pageConfigs], compact('people', 'unit'));
+            return Inertia::render('DirectHire/WinnerIndex', [
+                'people' => $people,
+                'unit' => $unit,
+            ]);
         } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Assuntos Cadastrados!')->error();
+            flash('Erro ao procurar as Pessoas Cadastradas!')->error();
             return redirect()->back()->withInput();
         }
     }
 
-    public function create(): View
+    public function create()
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
-        $pageConfigs = ['pageHeader' => false];
         $unit = Unit::where('web', true)->first();
 
         $genres = Genre::all();
@@ -69,15 +70,21 @@ class DirectHireWinnerController extends Controller
         $states = State::all();
         $cities = City::all();
 
-        return view('admin.directHire.winner_create', ['pageConfigs' => $pageConfigs], compact('genres', 'unit', 'matrial_statuses', 'countries', 'states', 'cities'));
-
+        return Inertia::render('DirectHire/WinnerCreate', [
+            'genres' => $genres,
+            'unit' => $unit,
+            'matrial_statuses' => $matrial_statuses,
+            'countries' => $countries,
+            'states' => $states,
+            'cities' => $cities,
+        ]);
     }
 
     public function store(
         DirectHireWinnerRequest $request
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -96,7 +103,7 @@ class DirectHireWinnerController extends Controller
     public function show($winner_id)
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try{
             $unit = Unit::where('web', true)->first();
@@ -110,10 +117,18 @@ class DirectHireWinnerController extends Controller
             $directs_hires_winner = DirectHireWinner::where('people_id', $winner_id)
                                             ->latest()
                                             ->get();
-            return view('admin.directHire.winner_show', compact('person', 'unit', 'directs_hires_winner', 'genres', 'matrial_statuses', 'countries', 'states', 'cities'));
+            return Inertia::render('DirectHire/WinnerShow', [
+                'person' => $person,
+                'unit' => $unit,
+                'directs_hires_winner' => $directs_hires_winner,
+                'genres' => $genres,
+                'matrial_statuses' => $matrial_statuses,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
+            flash('Erro ao buscar o Vencedor!')->error();
             return redirect()->back()->withInput();
         }
     }
@@ -122,7 +137,7 @@ class DirectHireWinnerController extends Controller
         DirectHireWinnerRequest $request, $winner_id
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -141,16 +156,15 @@ class DirectHireWinnerController extends Controller
     public function destroy($winner)
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $for_delete = DirectHireWinner::find($winner);
             $direct_hire_id = $for_delete->direct_hire_id;
-            $direct_hire = Bidding::find($direct_hire_id);
             $for_delete->delete();
             flash('Vencedor deletado com sucesso!')->success();
-            return redirect('/licitacoes/' . $direct_hire->id);
+            return redirect()->route('contratacoes_diretas.show', $direct_hire_id);
         } catch (\Exception $exception) {
             flash('Erro ao deletar a Winner!')->error();
             return redirect()->back()->withInput();
@@ -161,7 +175,7 @@ class DirectHireWinnerController extends Controller
         Request $request, $person_id
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -170,7 +184,7 @@ class DirectHireWinnerController extends Controller
                 $fileData = array(
                     "people_id" => $person_id
                 );
-                $this->directHireItemUpdateService->update($fileData, $item_id);
+                $this->direct_hireItemUpdateService->update($fileData, $item_id);
             }
             flash('Item editado com sucesso!')->success();
             DB::commit();
@@ -186,7 +200,7 @@ class DirectHireWinnerController extends Controller
         Request $request
     ){
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -195,14 +209,13 @@ class DirectHireWinnerController extends Controller
                 $fileData = array(
                     "people_id" => NULL
                 );
-                $this->directHireItemUpdateService->update($fileData, $item_id);
+                $this->direct_hireItemUpdateService->update($fileData, $item_id);
             }
             flash('Item editado com sucesso!')->success();
             DB::commit();
             return redirect()->back();
         }catch (\Throwable $throwable){
             DB::rollBack();
-            dd($throwable);
             flash('Erro ao editar!')->error();
             return redirect()->back()->withInput();
         }
@@ -211,7 +224,7 @@ class DirectHireWinnerController extends Controller
     public function winner_itens($winner_id)
     {
         if (! Gate::allows('Editar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
@@ -221,11 +234,17 @@ class DirectHireWinnerController extends Controller
             $states = State::all();
             $cities = City::all();
 
-            $winner_selected = $this->directHireWinnerService->show($winner_id);
-            return view('admin.directHire.winner_itens', compact('winner_selected', 'genres', 'matrial_statuses', 'countries', 'states', 'cities'));
+            $winner_selected = DirectHireWinner::with(['directHire.items', 'person'])->find($winner_id);
+            return Inertia::render('DirectHire/WinnerItems', [
+                'winner_selected' => $winner_selected,
+                'genres' => $genres,
+                'matrial_statuses' => $matrial_statuses,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
+            flash('Erro ao buscar o Vencedor!')->error();
             return redirect()->back()->withInput();
         }
     }

@@ -1,0 +1,1 @@
+import{j as i}from"./app-d9652968.js";function s({user:a,audits:n,occupations:t}){return i.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[i.jsxs("h1",{children:["Detalhes da Pessoa: ",a==null?void 0:a.name]}),i.jsxs("p",{children:["E-mail: ",a==null?void 0:a.email]})]})}export{s as default};

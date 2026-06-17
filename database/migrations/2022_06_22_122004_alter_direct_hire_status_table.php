@@ -15,6 +15,8 @@ class AlterDirectHireStatusTable extends Migration
     {
         Schema::table('direct_hires', function (Blueprint $table) {
             $table->dropColumn('active');
+        });
+        Schema::table('direct_hires', function (Blueprint $table) {
             $table->enum('status', ['PUBLISHED', 'DRAFT', 'PENDING'])->default('DRAFT');
         });
     }

@@ -1,38 +1,40 @@
 # Gerenciador Secretaria Municipal
 
-Projeto Laravel 8 com frontend Inertia + React e migração em andamento de Laravel Mix para Vite.
+Projeto Laravel 8 com frontend **Inertia.js + React** e pipeline de build **Vite**. Desenvolvido originalmente como sistema de gestão para secretaria municipal, atualmente sendo refatorado como projeto de portfólio.
 
 ## Descrição
 
-Aplicação de gestão para secretaria municipal com interface moderna, suporte a autenticação, permissões e dashboards. O backend é Laravel 8 e o frontend usa Inertia.js com React.
-Projeto legado de um trabalho anterior que estou atualizando para estudo e portfolio.
+Aplicação de gestão administrativa municipal com painel de controle moderno, suporte a autenticação, permissões granulares (Spatie Permission) e dashboards. O backend é Laravel 8 e o frontend usa Inertia.js com React, compilados via Vite.
+
+> Projeto legado em processo de modernização: remoção de referências ao cliente original, migração de Blade para Inertia/React e padronização da infraestrutura com Docker Compose puro.
 
 ## Stack principal
 
 - PHP 8.1+
-- Laravel 8
-- Inertia.js
-- React 17
-- Vite (migração em andamento)
-- Tailwind CSS
-- Jetstream + Sanctum
+- Laravel 8 + Fortify + Jetstream
+- Inertia.js + React 17
+- Vite (migração do Laravel Mix concluída)
+- Bootstrap 5 (template admin legado)
 - Spatie Permission
-- Laravel Sail / Docker opcional
+- Docker Compose (sem Laravel Sail)
 
 ## Status atual
 
-- `vite.config.js` criado e configurado
-- `resources/views/app.blade.php` atualizado para usar `@vite('resources/js/app.jsx')`
-- `package.json` contém scripts Vite e dependências para React + Laravel Vite Plugin
-- O projeto ainda possui referências antigas a `mix()` em algumas views
-- `webpack.mix.js` e assets Mix continuam presentes para evitar quebra até a migração completa
+### ✅ Concluído
+- Migração de Laravel Mix → **Vite** completa
+- Todas as views de **autenticação** migradas para Inertia + React:
+  - Login, Register, ForgotPassword, ResetPassword, ConfirmPassword, VerifyEmail
+- Painel principal migrado: Dashboard, Notícias, Pessoas, Usuários, Ouvidoria, Receita, Despesa, Licitações, Legislação
+- Remoção de referências ao cliente original (PMAC, SEMAS, CODE)
+- Infraestrutura padronizada com **docker-compose puro** (Sail descontinuado)
+
+### 🔄 Em andamento
+- Migração dos módulos administrativos secundários para Inertia + React
+- Ver `ROADMAP_INERTIA_REACT.md` para o checklist completo
 
 ## Pré-requisitos
 
-- PHP 8.1+
-- Composer
-- Node.js 18+ / npm
-- Docker & Docker Compose (opcional)
+- Docker & Docker Compose
 
 ## Instalação
 
@@ -42,22 +44,19 @@ Projeto legado de um trabalho anterior que estou atualizando para estudo e portf
    cp .env.example .env
    ```
 
-2. Instale dependências PHP:
+2. Suba os containers:
 
    ```bash
-   composer install
+   docker-compose up -d
    ```
 
-3. Instale dependências Node:
+3. Instale dependências e prepare o ambiente:
 
    ```bash
-   npm install
-   ```
-
-4. Gere a chave de aplicação:
-
-   ```bash
-   php artisan key:generate
+   docker-compose exec -u sail laravel.test composer install
+   docker-compose exec laravel.test npm install
+   docker-compose exec -u sail laravel.test php artisan key:generate
+   docker-compose exec -u sail laravel.test php artisan migrate --seed
    ```
 
 ## Execução
@@ -65,45 +64,50 @@ Projeto legado de um trabalho anterior que estou atualizando para estudo e portf
 ### Desenvolvimento
 
 ```bash
-npm run dev
-php artisan serve
+docker-compose up -d
+docker-compose exec laravel.test npm run dev
 ```
 
 ### Build de produção
 
 ```bash
-npm run build
-php artisan vendor:publish --tag=laravel-assets
+docker-compose exec laravel.test npm run build
+```
+
+### Testes
+
+```bash
+docker-compose exec -T -u sail laravel.test php artisan test
 ```
 
 ## Scripts npm
 
-- `npm run dev` — inicia o servidor Vite
-- `npm run build` — gera os assets de produção
-- `npm run preview` — pré-visualiza o build de produção
-
-## Observações de migração
-
-- Ainda existem views que usam `mix('...')` e `asset(mix('...'))`.
-- Manter `webpack.mix.js` e arquivos de build antigos até migrar todas as referências.
-- Quando a migração estiver completa, remova o Mix e `mix-manifest.json`.
+- `npm run dev` — inicia o servidor Vite com HMR
+- `npm run build` — gera os assets de produção em `public/build/`
 
 ## Estrutura importante
 
-- `resources/js/app.jsx` — ponto de entrada React
-- `resources/views/app.blade.php` — layout principal Inertia
+- `resources/js/app.jsx` — ponto de entrada React/Inertia
+- `resources/js/Pages/` — componentes React por módulo
+- `resources/views/app.blade.php` — layout raiz Inertia
 - `vite.config.js` — configuração Vite
-- `webpack.mix.js` — configuração legada Mix
+- `docker-compose.yml` — infraestrutura Docker
+
+## Credenciais de desenvolvimento
+
+- **Admin:** `admin@admin.com` / `admin`
 
 ## Git
 
-Já existe `.gitignore` configurado para ignorar `node_modules`, `vendor`, `public/hot`, `storage`, `.env` e outros arquivos de build.
+Repositório: `https://github.com/FeCruz0/gerenciador-secretaria-municipal`
 
 ## Documentação adicional
 
-- `docs/roadmap.md`
-- `ROADMAP_INERTIA_REACT.md`
+- `ROADMAP_INERTIA_REACT.md` — roadmap de migração Inertia + React (principal)
+- `docs/roadmap.md` — prioridades e evolução do projeto
+- `docs/vite-migration-plan.md` — plano de migração Mix → Vite (concluído)
+- `LOGIN_PANEL_FIX.md` — correção do painel de auth pós-Vite
 
 ---
 
-> Use este `README.md` como base e atualize conforme o projeto avançar na migração para Vite e na limpeza dos assets legados.
+> **Regras de IA:** Consulte `.cursorrules` antes de qualquer alteração. Git commits são responsabilidade exclusiva do usuário.

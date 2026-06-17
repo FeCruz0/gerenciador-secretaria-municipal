@@ -1,12 +1,10 @@
 # Roadmap: Migração para Inertia.js + React
 
-> **Contexto**: O projeto usa Laravel 8 com Jetstream, que já possui o Inertia.js instalado (stack Vue3).
-> A migração consiste em: desfazer a abordagem API + Next.js, trocar Vue3 por React no Inertia,
-> e converter progressivamente as views Blade em componentes React.
+> **Contexto**: Projeto Laravel 8 com Jetstream/Fortify. A migração converte progressivamente as views Blade em componentes React servidos via Inertia.js, com Vite como bundler.
 
 ---
 
-## 🗺️ Visão Geral da Nova Arquitetura
+## 🗺️ Visão Geral da Arquitetura
 
 ```
 Navegador
@@ -22,211 +20,184 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 ---
 
-## ⚠️ O que DESFAZER (da abordagem API + Next.js)
-
-> Estes itens foram criados durante a tentativa anterior e devem ser removidos/revertidos.
-
-- [x] **Remover pasta `/frontend`** — contém o projeto Next.js que não será mais utilizado
-- [x] **Remover serviço `frontend` do `docker-compose.yml`** — voltar para 1 único container da app
-- [x] **Remover `frontend/Dockerfile.dev`** e arquivos relacionados (já serão removidos com a pasta)
-- [x] **Remover `/app/Http/Controllers/Api/NewsApiController.php`** — controller de API REST criado para Next.js
-- [x] **Limpar as rotas adicionadas em `routes/api.php`** — remover rotas `/news` e `/news/{id}`
-- [x] **Remover `.dockerignore` da raiz** — não é mais necessário com 1 container
-
----
-
-## 📋 Checklist de Migração
-
-### Fase 1: Limpeza e Reversão
-- [x] Remover pasta `/frontend` e parar o serviço no Docker
-- [x] Atualizar `docker-compose.yml` removendo o serviço `frontend`
+## ✅ Fase 1: Limpeza e Reversão (Concluída)
+- [x] Remover pasta `/frontend` (projeto Next.js abandonado)
+- [x] Atualizar `docker-compose.yml` removendo serviço `frontend`
 - [x] Remover `NewsApiController.php` e limpar `routes/api.php`
+- [x] Remover referências ao cliente original (PMAC, SEMAS, CODE)
 
 ---
 
-### Fase 2: Instalar e Configurar Inertia.js + React
-
-> O projeto já tem `@inertiajs/inertia` instalado, mas na versão para Vue3.
-> Vamos trocar para a versão React.
-
-- [x] **Instalar pacote PHP do Inertia**:
-  ```bash
-  docker-compose exec -u sail laravel.test composer require inertiajs/inertia-laravel
-  ```
-
-- [x] **Registrar middleware `HandleInertiaRequests`** em `app/Http/Kernel.php`:
-  ```php
-  // Em $middlewareGroups['web']:
-  \App\Http\Middleware\HandleInertiaRequests::class,
-  ```
-
-- [x] **Publicar o middleware**:
-  ```bash
-  docker-compose exec -u sail laravel.test php artisan inertia:middleware
-  ```
-
-- [x] **Remover dependências Vue3** do `package.json`:
-  - `@inertiajs/inertia-vue3`
-  - `@vue/compiler-sfc`
-  - `vue`
-  - `vue-loader`
-
-- [x] **Instalar dependências React** no `package.json`:
-  ```bash
-  docker-compose exec -u sail laravel.test npm install @inertiajs/inertia @inertiajs/react react react-dom
-  docker-compose exec -u sail laravel.test npm install --save-dev @babel/preset-react
-  ```
+## ✅ Fase 2: Instalar e Configurar Inertia.js + React (Concluída)
+- [x] Instalar pacote PHP do Inertia
+- [x] Registrar middleware `HandleInertiaRequests`
+- [x] Remover dependências Vue3, instalar React
+- [x] Criar `resources/js/app.jsx` como entry point
+- [x] Criar `resources/views/app.blade.php` como layout raiz
 
 ---
 
-### Fase 3: Configurar Bundler (Laravel Mix → Vite ou Mix com React)
-
-> O projeto usa `laravel-mix`. Vamos configurá-lo para compilar JSX.
-
-- [x] **Atualizar `webpack.mix.js`** para suportar React/JSX:
-  ```js
-  mix.js('resources/js/app.jsx', 'public/js')
-     .react()  // habilita transformação JSX
-     .postCss('resources/css/app.css', 'public/css');
-  ```
-
-- [x] **Criar `resources/js/app.jsx`** — entry point do Inertia + React:
-  ```jsx
-  import { createRoot } from 'react-dom/client';
-  import { createInertiaApp } from '@inertiajs/react';
-
-  createInertiaApp({
-    resolve: (name) => {
-      const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-      return pages[`./Pages/${name}.jsx`];
-    },
-    setup({ el, App, props }) {
-      createRoot(el).render(<App {...props} />);
-    },
-  });
-  ```
-
-- [x] **Criar template raiz Blade** em `resources/views/app.blade.php`:
-  ```html
-  <!DOCTYPE html>
-  <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-  <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>{{ config('app.name') }}</title>
-      <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-  </head>
-  <body>
-      @inertia
-      <script src="{{ mix('js/app.js') }}" defer></script>
-  </body>
-  </html>
-  ```
-
-- [x] **Compilar os assets**:
-  ```bash
-  docker-compose exec -u sail laravel.test npm run dev
-  ```
+## ✅ Fase 3: Laravel Mix → Vite (Concluída)
+- [x] Instalar e configurar Vite com plugin React
+- [x] Criar `vite.config.js`
+- [x] Atualizar scripts em `package.json`
+- [x] Substituir `mix()` por `@vite()` e `asset()` nos layouts
+- [x] Validar build de produção
+- [x] Remover dependências do Mix
 
 ---
 
-### Fase 4: Migrar Controllers de Blade → Inertia
-
-> Os controllers atuais retornam views Blade. Cada `return view(...)` será convertido para `return Inertia::render(...)`.
-
-#### Exemplo de migração (NewsController):
-```php
-// ANTES (Blade):
-return view('admin.news.news_index', compact('news'));
-
-// DEPOIS (Inertia + React):
-return Inertia::render('News/Index', [
-    'news' => $news
-]);
-```
-
-- [x] **Dashboard** (`DashboardController`) — página inicial após login
-- [x] **Notícias** (`NewsController`) — index, create, show, edit
-- [x] **Pessoas** (`PeopleController`)
-- [x] **Usuários** (`Admin/UsersController`)
-- [ ] **Legislação** (`LegislationController`)
-- [ ] **Licitações** (`BiddingController`)
-- [ ] **Receitas** (`RevenueController`)
-- [ ] **Despesas** (`ExpenseController`)
-- [x] **Ouvidoria** (`OmbudsmanController`)
-- [ ] **Demais controllers** (migração progressiva)
+## ✅ Fase 4: Migrar Telas de Autenticação (Concluída)
+- [x] `Auth/Login.jsx` — `AuthenticatedSessionController`
+- [x] `Auth/Register.jsx` — `RegisteredUserController`
+- [x] `Auth/ForgotPassword.jsx` — `PasswordResetLinkController`
+- [x] `Auth/ResetPassword.jsx` — `NewPasswordController`
+- [x] `Auth/ConfirmPassword.jsx` — `ConfirmablePasswordController`
+- [x] `Auth/VerifyEmail.jsx` — `EmailVerificationPromptController`
 
 ---
 
-### Fase 5: Criar Componentes React
-
-> Para cada `Inertia::render('News/Index', ...)` no controller, deve existir um arquivo em `resources/js/Pages/`.
-
-- [x] **Criar estrutura de pastas**:
-  ```
-  resources/js/
-  ├── app.jsx
-  ├── Pages/
-  │   ├── Dashboard.jsx
-  │   ├── News/
-  │   │   ├── Index.jsx
-  │   │   ├── Create.jsx
-  │   │   └── Show.jsx
-  │   ├── People/
-  │   │   ├── Index.jsx
-  │   │   ├── Show.jsx
-  │   │   └── Create.jsx
-  │   ├── Users/
-  │   │   ├── Index.jsx
-  │   │   ├── Create.jsx
-  │   │   └── Edit.jsx
-  │   └── Ombudsman/
-  │       ├── Index.jsx
-  │       ├── Show.jsx
-  │       └── ReportIndex.jsx
-  └── Components/
-      └── Layout/
-          └── AdminLayout.jsx
-  ```
-
-- [x] **Criar Layout Admin** (`AdminLayout.jsx`) — sidebar, header, footer
-- [x] **Migrar página Dashboard**
-- [x] **Migrar páginas de Notícias**
-- [x] **Migrar páginas de Pessoas, Usuários e Ouvidoria**
-- [ ] **Migrar demais páginas progressivamente** (Legislação, Licitações, Receitas, Despesas)
+## ✅ Fase 5: Migrar Painel Principal (Concluída)
+- [x] `Dashboard.jsx` — `DashboardController`
+- [x] `News/` (Index, Create, Show) — `NewsController`
+- [x] `People/` (Index, Create, Show) — `PeopleController`
+- [x] `Users/` (Index, Create, Edit, Show) — `Admin/UsersController`
+- [x] `Ombudsman/` (Index, Show, ReportIndex) — `OmbudsmanController`
+- [x] `Revenue/` (Index, Create, Show, ReportIndex) — `RevenueController`
+- [x] `Expense/` (Index, Create, Show, ReportIndex) — `ExpenseController`
+- [x] `Bidding/` (Index, Create, Show) — `BiddingController`
+- [x] `Legislation/` (Index, Create, Show, ReportIndex) — `LegislationController`
 
 ---
 
-### Fase 6: Autenticação
+## 🔄 Fase 6: Migrar Módulos Administrativos Secundários (Em andamento)
 
-> Com Inertia, a autenticação via sessão do Laravel funciona nativamente. Basta adaptar as rotas de login.
+> Ordenados por **prioridade de negócio** (maior uso/impacto primeiro).
 
-- [ ] **Configurar rotas de auth** apontando para componentes React:
-  ```php
-  Route::get('/login', fn() => Inertia::render('Auth/Login'))->name('login');
-  ```
-- [ ] **Criar `Pages/Auth/Login.jsx`** com formulário de login usando `useForm` do Inertia
-- [ ] **Criar `Pages/Auth/Register.jsx`** se necessário
+### Grupo A — Alta Prioridade (CRUD core, usados no dia-a-dia)
+
+- [x] **Contratações Diretas** — `DirectHireController` + `DirectHireWinnerController`
+  - Views: `admin.directHire.*`
+- [ ] **Projetos** — `ProjectController` + `ProjectCategoryController`
+  - Views: `admin.project.*`
+- [ ] **Lideranças** — `LeadershipController`
+  - Views: `admin.leadership.*`
+- [ ] **Unidade** — `UnitController`
+  - Views: `admin.unit.*`
+- [ ] **Relatórios de Contratação** — `HiringReportsController`
+  - Views: `admin.hiringReports.*`
+
+### Grupo B — Média Prioridade (Configurações e tabelas de apoio)
+
+- [ ] **Tipo de Receita** — `RevenueTypeController`
+  - Views: `admin.revenue.type_*`
+- [ ] **Tipo de Despesa** — `TypeExpenseController`
+  - Views: `admin.expense.type_*`
+- [ ] **Tipo de Acesso** — `TypeAccessController`
+- [ ] **Tipo de Solicitação** — `TypeRequestController`
+- [ ] **Unidade de Conservação** — `UnitConservationController` + `ConservationUnitController`
+- [ ] **Departamento** — `DepartamentController`
+- [ ] **Ocupação** — `OccupationController`
+- [ ] **Organização** — `OrganizationController`
+
+### Grupo C — Baixa Prioridade (Conteúdo do site público / auxiliares)
+
+- [ ] **Notificações** — `NotificationController`
+- [ ] **Galeria** — `GalleryController`
+- [ ] **Post** — `PostController`
+- [ ] **FAQ** — `FAQController`
+- [ ] **Banner** — `BannerController`
+- [ ] **Legislação (aux)** — `LegislationBondController`, `LegislationCategoryController`, `LegislationSituationController`, `LegislationSubjectController`
+- [ ] **Arquivo** — `FileController`
+- [ ] **Shortcut Web** — `ShortcutWebController`
+- [ ] **Relatório Gerencial** — `ManagementReportController`
+
+### Grupo D — Manter em Blade por ora (Páginas estáticas / template site público)
+
+> Conforme decisão do projeto, as views do site público (`/web/**`) serão refeitas do zero no futuro. Não migrar agora.
+
+- ⏸️ `PagesController` — páginas de exemplo do template (account, blog, etc.)
+- ⏸️ Controllers Web: `HomeWebController`, `InstitutionalWebController`, `ServicesWebController`, `MyEnvironmentWebController`, `TransparencyWebController`, `PublicationWebController`
 
 ---
 
-## 🚀 Ordem de Execução Recomendada
+## 📌 Regras de Migração
 
-| # | Ação | Estimativa |
-|---|------|-----------|
-| 1 | Limpeza: remover frontend, atualizar docker-compose | 15 min |
-| 2 | Instalar Inertia PHP + React, configurar middleware | 30 min |
-| 3 | Configurar Mix para JSX, criar `app.jsx` e `app.blade.php` | 30 min |
-| 4 | Compilar e verificar que a página carrega sem erros | 15 min |
-| 5 | Migrar Dashboard (primeira página de teste) | 1h |
-| 6 | Criar Layout Admin reutilizável | 2h |
-| 7 | Migrar demais páginas progressivamente | ongoing |
+- Cada `return view('admin.*')` deve virar `return Inertia::render('Módulo/Página', [...])`
+- Criar o componente React correspondente em `resources/js/Pages/`
+- Usar `useForm` do `@inertiajs/inertia-react` em formulários
+- Rodar `npm run build` após cada migração de módulo
+- Rodar `php artisan test` para garantir ausência de regressões
+
+---
+
+## 📋 Fase 7: Bootstrap → Tailwind CSS (Futuro — após Fase 6 concluída)
+
+> ✅ **Decisão confirmada:** Bootstrap será substituído por **Tailwind CSS + Shadcn/ui**.
+> A remoção só deve ocorrer **depois** que todos os módulos estiverem em React.
+
+### Por que substituir?
+- Bootstrap adiciona ~200KB de CSS não utilizado nos componentes React
+- Classes Bootstrap acoplam os componentes React a um sistema de design legado
+- Tailwind permite CSS zero-runtime, purge automático e consistência com o ecossistema React moderno
+- Shadcn/ui entrega componentes acessíveis, sem estilo imposto, prontos para customização
+
+### Plano de remoção incremental
+
+**Etapa 7.1 — Auditoria**
+- [ ] Mapear todos os componentes React que usam classes Bootstrap (`btn`, `form-control`, `card`, `col-`, `row`, etc.)
+- [ ] Identificar componentes JS do Bootstrap em uso (Modals, Dropdowns, Tooltips)
+- [ ] Mapear tokens de design atuais (cores, espaçamentos) para migrar ao `tailwind.config.js`
+
+**Etapa 7.2 — Instalar Tailwind + Shadcn/ui**
+- [ ] Instalar `tailwindcss`, `@tailwindcss/forms`, `@tailwindcss/typography` no pipeline Vite
+- [ ] Configurar `tailwind.config.js` com purge para `resources/js/**` e `resources/views/**`
+- [ ] Instalar `shadcn/ui` (ou `@radix-ui/react-*` + `class-variance-authority`) para componentes acessíveis
+
+**Etapa 7.3 — Migração componente a componente**
+- [ ] Criar design tokens (cores, espaçamentos) alinhados ao novo design
+- [ ] Migrar `AdminLayout.jsx` para Tailwind
+- [ ] Migrar cada página React progressivamente (começar pelas mais simples)
+- [ ] Remover imports do Bootstrap dos layouts Blade
+
+**Etapa 7.4 — Limpeza final**
+- [ ] Remover `bootstrap` do `package.json`
+- [ ] Remover arquivos `public/css/core.css`, `public/vendors/`, etc.
+- [ ] Remover referências a Bootstrap nos layouts Blade legados
+- [ ] Validar build sem Bootstrap
+
+> [!WARNING]
+> Não iniciar a Fase 7 antes de concluir a Fase 6. Remover Bootstrap antes de migrar todos os módulos quebrará as views Blade ainda ativas.
+
+---
+
+## 📋 Fase 8: Melhorias no Sistema de Permissões (Médio prazo)
+
+> ✅ **Decisão confirmada:** Manter **Spatie Laravel-Permission**. Implementar as melhorias de Enum + compartilhamento com React.
+> Ver análise completa em `docs/spatie-analysis.md`.
+
+**Etapa 8.1 — Criar Enum de Permissões**
+- [ ] Criar `app/Enums/Permission.php` com todas as permissões como enum PHP 8.1
+- [ ] Substituir strings hardcoded nos controllers por `Permission::ENUM->value`
+- [ ] Atualizar seeders de permissões para usar os valores do enum
+
+**Etapa 8.2 — Compartilhar permissões com React**
+- [ ] Atualizar `HandleInertiaRequests::share()` para incluir permissões do usuário
+- [ ] Criar hook `usePermission()` no React para checar permissões no frontend
+- [ ] Aplicar controle de UI (mostrar/esconder botões) baseado nas permissões recebidas
+
+**Etapa 8.3 — Melhorar tratamento de não-autorizado**
+- [ ] Substituir `return view('pages.not-authorized')` por `abort(403)` nos controllers
+- [ ] Criar página `403.jsx` em Inertia para tratar o erro de forma elegante
 
 ---
 
 ## 📌 Notas Importantes
 
-- **Livewire existente**: O projeto usa Livewire (`livewire/livewire ^2.5`). Com Inertia, o Livewire pode **coexistir** temporariamente, mas será substituído por componentes React no estado final.
-- **Manter `routes/web.php`**: As rotas permanecem em `web.php`. Apenas o retorno dos controllers muda.
-- **Dados compartilhados**: Dados globais (usuário logado, permissões, flash messages) devem ser compartilhados via `HandleInertiaRequests::share()`.
-- **Formulários**: Usar o hook `useForm` do Inertia para submissão de formulários (sem fetch/axios manual).
+- **Docker:** Usar sempre `docker-compose exec -u sail laravel.test` para PHP/Artisan. Nunca usar `./vendor/bin/sail`.
+- **Git:** Commits são responsabilidade exclusiva do usuário. A IA prepara apenas a mensagem.
+- **TDD:** Seguir o fluxo Red → Green antes de cada implementação.
+- **Dados compartilhados globais** (usuário, permissões, flash) via `HandleInertiaRequests::share()`.
+- **Livewire**: Coexiste temporariamente, será substituído por React progressivamente.
+- **Bootstrap**: Manter até conclusão da Fase 6. Ver Fase 7 para plano de remoção.
+- **Spatie Permission**: Manter. Ver `docs/spatie-analysis.md` para análise completa e melhorias sugeridas.

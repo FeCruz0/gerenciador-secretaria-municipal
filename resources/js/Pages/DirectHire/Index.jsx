@@ -1,0 +1,85 @@
+import React, { useState } from 'react';
+import { Head, Link } from '@inertiajs/inertia-react';
+import { Inertia } from '@inertiajs/inertia';
+import AdminLayout from '../../Components/Layout/AdminLayout';
+
+export default function DirectHireIndex({ direct_hires }) {
+    const [search, setSearch] = useState('');
+
+    const filtered = direct_hires.filter(dh =>
+        dh.title?.toLowerCase().includes(search.toLowerCase()) ||
+        dh.bidding?.toLowerCase().includes(search.toLowerCase()) ||
+        dh.process?.toLowerCase().includes(search.toLowerCase())
+    );
+
+    function handleDelete(id) {
+        if (confirm('Tem certeza que deseja excluir esta contratação direta?')) {
+            Inertia.delete(route('contratacoes_diretas.destroy', id));
+        }
+    }
+
+    const statusBadge = (status) => {
+        const map = { PUBLISHED: '#10b981', DRAFT: '#f59e0b', PENDING: '#3b82f6' };
+        const color = map[status] || '#6b7280';
+        return <span style={{ background: color + '20', color, padding: '2px 10px', borderRadius: 20, fontSize: 12, fontWeight: 600 }}>{status}</span>;
+    };
+
+    return (
+        <AdminLayout title="Contratações Diretas">
+            <Head title="Contratações Diretas" />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <div>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>Contratações Diretas</h1>
+                    <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros</p>
+                </div>
+                <Link href={route('contratacoes_diretas.create')} className="btn-primary">+ Nova Contratação</Link>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+                <input
+                    type="text"
+                    placeholder="Buscar por título, número ou processo..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={{ width: '100%', maxWidth: 400, padding: '8px 14px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', outline: 'none' }}
+                />
+            </div>
+
+            <div style={{ background: '#1e293b', borderRadius: 12, overflow: 'hidden', border: '1px solid #334155' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr style={{ borderBottom: '1px solid #334155' }}>
+                            {['Licitação/Bidding', 'Título', 'Modalidade', 'Estimativa (R$)', 'Status', 'Ações'].map(h => (
+                                <th key={h} style={{ padding: '14px 16px', textAlign: 'left', color: '#94a3b8', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filtered.length === 0 ? (
+                            <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Nenhuma contratação direta encontrada</td></tr>
+                        ) : filtered.map(dh => (
+                            <tr key={dh.id} style={{ borderBottom: '1px solid #1e293b' }} className="table-row-hover">
+                                <td style={{ padding: '14px 16px', color: '#94a3b8', fontFamily: 'monospace' }}>{dh.bidding || '—'}</td>
+                                <td style={{ padding: '14px 16px', color: '#f1f5f9', fontWeight: 500, maxWidth: 260 }}>
+                                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{dh.title}</div>
+                                </td>
+                                <td style={{ padding: '14px 16px', color: '#94a3b8' }}>{dh.modality?.title || '—'}</td>
+                                <td style={{ padding: '14px 16px', color: '#10b981', fontWeight: 600 }}>
+                                    {dh.value_max ? 'R$ ' + Number(dh.value_max).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '—'}
+                                </td>
+                                <td style={{ padding: '14px 16px' }}>{statusBadge(dh.status)}</td>
+                                <td style={{ padding: '14px 16px' }}>
+                                    <div style={{ display: 'flex', gap: 8 }}>
+                                        <Link href={route('contratacoes_diretas.show', dh.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#334155', color: '#94a3b8', fontSize: 12, textDecoration: 'none' }}>Ver</Link>
+                                        <button onClick={() => handleDelete(dh.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}>Excluir</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </AdminLayout>
+    );
+}

@@ -1,49 +1,61 @@
 # Roadmap de Migração e Evolução
 
 ## Objetivo
-Migrar o frontend atual de Laravel Mix para Vite em um projeto Laravel 8 com Inertia + React, preservando a funcionalidade atual do painel administrativo e preparando a base para melhorias de performance e novos módulos.
+Modernizar o sistema de gestão municipal: migrar o frontend de Blade para Inertia + React com Vite, remover referências ao cliente original, e preparar o projeto como portfólio técnico.
 
-## Prioridades
+---
 
-### Prioridade 1: Preparação da migração para Vite
-1. Auditar o uso de `mix()` em todos os templates Blade e componentes.
-2. Instalar e configurar `vite` com plugin React.
-3. Atualizar `package.json` para scripts de Vite.
-4. Configurar `vite.config.js` com entrada para `resources/js/app.jsx`.
-5. Ajustar os layouts Blade principais para usar `@vite()` em vez de `mix()`.
+## ✅ Prioridade 1: Migração para Vite (Concluída)
+- [x] Auditar e remover todos os usos de `mix()` nos templates
+- [x] Instalar e configurar `vite` com plugin React
+- [x] Atualizar `package.json` para scripts de Vite
+- [x] Configurar `vite.config.js` com entrada `resources/js/app.jsx`
+- [x] Substituir `mix()` por `@vite()` e `asset()` nos layouts principais
+- [x] Validar HMR e renderização do app Inertia
+- [x] Executar build de produção com Vite
+- [x] Remover dependências e arquivos do Mix
 
-### Prioridade 2: Estabilizar o app React/Inertia
-1. Garantir que `resources/js/app.jsx` funcione como entrada Vite.
-2. Testar HMR e carregamento de páginas Inertia.
-3. Migrar gradualmente CSS e scripts legados para o pipeline Vite.
-4. Manter os assets legados em `asset()` enquanto a migração ocorre.
+---
 
-### Prioridade 3: Performance e limpeza pós-migração
-1. Executar build de produção com Vite.
-2. Remover dependências e arquivos do Mix.
-3. Verificar e migrar todos os templates restantes que usam `mix()`.
-4. Limpar CSS e JS não utilizados.
+## ✅ Prioridade 2: Migração Auth + Painel Principal (Concluída)
+- [x] Login, Register, ForgotPassword, ResetPassword, ConfirmPassword, VerifyEmail → Inertia/React
+- [x] Dashboard, Notícias, Pessoas, Usuários, Ouvidoria → Inertia/React
+- [x] Receita, Despesa, Licitações, Legislação → Inertia/React
 
-### Prioridade 4: Funcionalidades de alto impacto
-1. Autenticação e autorização de administradores via Jetstream/Fortify com Inertia.
-2. Correção de N+1 queries nos controllers críticos.
-3. Cache de consultas e uso do Redis no Docker.
-4. Modelos de conteúdo para notícias, eventos, documentos e configurações do site.
-5. Evolução para portal da transparência e ouvidoria.
+---
 
-## Observações
-- A migração para Vite deve ser incremental, começando pelo app React/Inertia.
-- O foco inicial não é migrar para Next.js; Vite é a alternativa mais adequada para este projeto.
-- Os templates Blade com CSS e JS legacy podem ser mantidos até a migração completa.
-## Checklist do Roadmap
-- [ ] Auditar todos os usos de `mix()` no projeto.
-- [ ] Instalar e configurar `vite` com plugin React.
-- [ ] Atualizar `package.json` para scripts de Vite.
-- [ ] Configurar `vite.config.js` e entradas de build.
-- [ ] Substituir `mix()` por `@vite()` nos layouts principais.
-- [ ] Validar HMR e a renderização do app Inertia.
-- [ ] Migrar CSS e scripts legados gradualmente.
-- [ ] Executar build de produção com Vite.
-- [ ] Remover dependências do Mix e limpar arquivos antigos.
-- [ ] Priorizar auth, N+1 e cache após a migração estar estável.
-- [ ] Planejar evolução para notícias, eventos, documentos e transparência.
+## ✅ Prioridade 3: Limpeza de Referências ao Cliente Original (Concluída)
+- [x] Remover referências PMAC, SEMAS, CODE do código da aplicação
+- [x] Atualizar deploy.php com novo repositório GitHub
+- [x] Neutralizar UnitSeeder com dados do cliente
+- [x] Renomear rota `/publicacoessemas` → `/publicacoes`
+- [x] Remover logo CODE do Login.jsx
+
+---
+
+## 🔄 Prioridade 4: Migrar Módulos Administrativos Secundários (Em andamento)
+Ver checklist detalhado em `ROADMAP_INERTIA_REACT.md` — Fase 6.
+
+### Ordem sugerida:
+1. [x] Contratações Diretas (`DirectHireController` + `DirectHireWinnerController`)
+2. Projetos (`ProjectController`)
+3. Lideranças (`LeadershipController`)
+4. Unidade (`UnitController`)
+5. Relatórios de Contratação (`HiringReportsController`)
+6. Tabelas auxiliares (Tipos, Departamento, Ocupação, Organização)
+
+---
+
+## 📋 Prioridade 5: Melhorias Técnicas (Futuro)
+- [ ] Correção de N+1 queries nos controllers críticos
+- [ ] Cache de consultas e Redis no Docker
+- [ ] Tipagem estrita PHP 8.1 nos controllers migrados
+- [ ] Compartilhar permissões Spatie via `HandleInertiaRequests::share()`
+- [ ] Remoção do Livewire (substituído por React)
+
+---
+
+## 📋 Prioridade 6: Site Público (Futuro — Não migrar agora)
+> As views do site público (`/web/**`) serão refeitas do zero com novo template.
+- [ ] Novo template para o site público
+- [ ] Remover views estáticas legadas após novo template pronto
