@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class RegisteredUserController extends Controller
 {
@@ -19,7 +20,11 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.auth-register-multisteps');
+        $pageConfigs = ['blankPage' => true];
+
+        return Inertia::render('Auth/Register', [
+            'pageConfigs' => $pageConfigs,
+        ]);
     }
 
     /**
@@ -47,10 +52,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        //Auth::login($user);
-
-        //return redirect(RouteServiceProvider::HOME);
-        return view('auth.auth-login-cover');
+        return redirect()->route('login')
+            ->with('status', 'Conta criada com sucesso! Aguarde a aprovação do administrador para acessar o sistema.');
     }
 
     public function store_user(Request $request)

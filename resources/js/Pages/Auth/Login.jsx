@@ -121,14 +121,7 @@ export default function Login({ unit }) {
                             </button>
                         </form>
 
-                        <div className="col-12 col-sm-8 col-md-6 col-lg-12 pt-4 text-center">
-                            <img 
-                                src="/images/logo/logo-code-pdf.png" 
-                                style={{ width: '50%' }} 
-                                className="logo-gmac"  
-                                alt="logo code pdf" 
-                            />
-                        </div>
+
                     </div>
                 </div>
                 {/* /Login Form */}

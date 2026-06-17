@@ -48,7 +48,10 @@ class RegistrationTest extends TestCase
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        // No projeto, usuários são criados com active=0 (aguardando aprovação do admin).
+        // Por isso o usuário NÃO é autenticado automaticamente após o registro.
+        $this->assertGuest();
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('status');
     }
 }
