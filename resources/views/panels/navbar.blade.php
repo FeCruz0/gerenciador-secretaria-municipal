@@ -131,7 +131,7 @@
             @if (Auth::check())
               {{ Auth::user()->name }}
             @else
-            {{ Auth::user()->email }}
+              Visitante
             @endif
           </span>
           <span class="user-status">
@@ -150,13 +150,13 @@
         </span>
       </a>
       <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
-        <h6 class="dropdown-header">Gerenciar Perfil</h6>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item"
-          href="{{ route('pessoas.show',  Auth::user()->id) }}">
-          <i class="me-50" data-feather="user"></i> Perfil
-        </a>
         @if (Auth::check())
+          <h6 class="dropdown-header">Gerenciar Perfil</h6>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item"
+            href="{{ route('pessoas.show',  Auth::user()->id) }}">
+            <i class="me-50" data-feather="user"></i> Perfil
+          </a>
           <a class="dropdown-item" href="{{ route('logout') }}"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="me-50" data-feather="power"></i> Logout

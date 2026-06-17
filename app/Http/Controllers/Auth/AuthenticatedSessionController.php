@@ -8,18 +8,22 @@ use App\Models\Unit;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
      *
-     * @return \Illuminate\View\View
+     * @return \Inertia\Response
      */
     public function create()
     {
         $unit = Unit::where('web', true)->first();
-        return view('auth.auth-login-cover', compact('unit'));
+        view()->share('pageConfigs', ['blankPage' => true, 'showMenu' => false]);
+        return Inertia::render('Auth/Login', [
+            'unit' => $unit
+        ]);
     }
 
     /**

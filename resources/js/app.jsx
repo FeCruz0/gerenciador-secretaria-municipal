@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { createInertiaApp } from '@inertiajs/inertia-react';
 import { InertiaProgress } from '@inertiajs/progress';
 import { Inertia } from '@inertiajs/inertia';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
 // Expõe Inertia globalmente para que links do Blade (sidebar/navbar)
 // possam usar navegação SPA sem full page reload
@@ -15,8 +16,9 @@ InertiaProgress.init({
 
 createInertiaApp({
     title: (title) => `${title}`,
-    resolve: (name) => import(`./Pages/${name}`).then(module => module.default),
+    resolve: (name) => resolvePageComponent(`./Pages/${name}.jsx`, import.meta.glob('./Pages/**/*.jsx')),
     setup({ el, App, props }) {
         render(<App {...props} />, el);
     },
 });
+
