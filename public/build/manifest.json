@@ -1,6 +1,6 @@
 {
-  "_AdminLayout-4c47e8e8.js": {
-    "file": "assets/AdminLayout-4c47e8e8.js",
+  "_AdminLayout-ee9fffc6.js": {
+    "file": "assets/AdminLayout-ee9fffc6.js",
     "imports": [
       "resources/js/app.jsx"
     ]
@@ -11,7 +11,7 @@
     "src": "resources/css/app.css"
   },
   "resources/js/Pages/Auth/ConfirmPassword.jsx": {
-    "file": "assets/ConfirmPassword-02590c04.js",
+    "file": "assets/ConfirmPassword-7fa694d9.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -19,7 +19,7 @@
     "src": "resources/js/Pages/Auth/ConfirmPassword.jsx"
   },
   "resources/js/Pages/Auth/ForgotPassword.jsx": {
-    "file": "assets/ForgotPassword-520d7420.js",
+    "file": "assets/ForgotPassword-b3d797fb.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -27,7 +27,7 @@
     "src": "resources/js/Pages/Auth/ForgotPassword.jsx"
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-8ab97264.js",
+    "file": "assets/Login-4f7f60b4.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -35,123 +35,131 @@
     "src": "resources/js/Pages/Auth/Login.jsx"
   },
   "resources/js/Pages/Auth/ResetPassword.jsx": {
-    "file": "assets/ResetPassword-9e37736e.js",
+    "file": "assets/ResetPassword-3e734769.js",
     "imports": [
       "resources/js/app.jsx"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/ResetPassword.jsx"
   },
+  "resources/js/Pages/Auth/VerifyEmail.jsx": {
+    "file": "assets/VerifyEmail-41d1e717.js",
+    "imports": [
+      "resources/js/app.jsx"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/Pages/Auth/VerifyEmail.jsx"
+  },
   "resources/js/Pages/Bidding/Create.jsx": {
-    "file": "assets/Create-84551f10.js",
+    "file": "assets/Create-ecd12861.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Bidding/Create.jsx"
   },
   "resources/js/Pages/Bidding/Index.jsx": {
-    "file": "assets/Index-2dbeefd6.js",
+    "file": "assets/Index-b6cc0d09.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Bidding/Index.jsx"
   },
   "resources/js/Pages/Bidding/Show.jsx": {
-    "file": "assets/Show-20e7de54.js",
+    "file": "assets/Show-40175e2b.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Bidding/Show.jsx"
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-5a2d51b1.js",
+    "file": "assets/Dashboard-f01acb0f.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Dashboard.jsx"
   },
   "resources/js/Pages/Expense/Create.jsx": {
-    "file": "assets/Create-24069db3.js",
+    "file": "assets/Create-be75967f.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Expense/Create.jsx"
   },
   "resources/js/Pages/Expense/Index.jsx": {
-    "file": "assets/Index-6e953cd2.js",
+    "file": "assets/Index-253bae8e.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Expense/Index.jsx"
   },
   "resources/js/Pages/Expense/ReportIndex.jsx": {
-    "file": "assets/ReportIndex-8e3d6bb4.js",
+    "file": "assets/ReportIndex-f7070d50.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Expense/ReportIndex.jsx"
   },
   "resources/js/Pages/Expense/Show.jsx": {
-    "file": "assets/Show-98a8dcf1.js",
+    "file": "assets/Show-0b35644f.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Expense/Show.jsx"
   },
   "resources/js/Pages/Legislation/Create.jsx": {
-    "file": "assets/Create-7dceebd3.js",
+    "file": "assets/Create-4796617d.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Legislation/Create.jsx"
   },
   "resources/js/Pages/Legislation/Index.jsx": {
-    "file": "assets/Index-974c4710.js",
+    "file": "assets/Index-be6be2b3.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Legislation/Index.jsx"
   },
   "resources/js/Pages/Legislation/ReportIndex.jsx": {
-    "file": "assets/ReportIndex-8ef44122.js",
+    "file": "assets/ReportIndex-0a3d80ee.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Legislation/ReportIndex.jsx"
   },
   "resources/js/Pages/Legislation/Show.jsx": {
-    "file": "assets/Show-69bae470.js",
+    "file": "assets/Show-e9621f0c.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Legislation/Show.jsx"
   },
   "resources/js/Pages/News/Create.jsx": {
-    "file": "assets/Create-ac63f5b0.js",
+    "file": "assets/Create-b79fbdc1.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -159,7 +167,7 @@
     "src": "resources/js/Pages/News/Create.jsx"
   },
   "resources/js/Pages/News/Index.jsx": {
-    "file": "assets/Index-32845bb3.js",
+    "file": "assets/Index-97566ab5.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -167,7 +175,7 @@
     "src": "resources/js/Pages/News/Index.jsx"
   },
   "resources/js/Pages/News/Show.jsx": {
-    "file": "assets/Show-78d15957.js",
+    "file": "assets/Show-ed1c02dd.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -175,7 +183,7 @@
     "src": "resources/js/Pages/News/Show.jsx"
   },
   "resources/js/Pages/Ombudsman/Index.jsx": {
-    "file": "assets/Index-ce44497c.js",
+    "file": "assets/Index-3c036508.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -183,7 +191,7 @@
     "src": "resources/js/Pages/Ombudsman/Index.jsx"
   },
   "resources/js/Pages/Ombudsman/ReportIndex.jsx": {
-    "file": "assets/ReportIndex-2ed071fe.js",
+    "file": "assets/ReportIndex-687065cc.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -191,7 +199,7 @@
     "src": "resources/js/Pages/Ombudsman/ReportIndex.jsx"
   },
   "resources/js/Pages/Ombudsman/Show.jsx": {
-    "file": "assets/Show-8f508f7c.js",
+    "file": "assets/Show-bd256ea0.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -199,7 +207,7 @@
     "src": "resources/js/Pages/Ombudsman/Show.jsx"
   },
   "resources/js/Pages/People/Create.jsx": {
-    "file": "assets/Create-8e2de895.js",
+    "file": "assets/Create-9d8c04f0.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -207,7 +215,7 @@
     "src": "resources/js/Pages/People/Create.jsx"
   },
   "resources/js/Pages/People/Index.jsx": {
-    "file": "assets/Index-b1d4cfcb.js",
+    "file": "assets/Index-16626c90.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -215,7 +223,7 @@
     "src": "resources/js/Pages/People/Index.jsx"
   },
   "resources/js/Pages/People/Show.jsx": {
-    "file": "assets/Show-443c06a6.js",
+    "file": "assets/Show-fcd3692f.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -223,43 +231,43 @@
     "src": "resources/js/Pages/People/Show.jsx"
   },
   "resources/js/Pages/Revenue/Create.jsx": {
-    "file": "assets/Create-a686f5f5.js",
+    "file": "assets/Create-f3ffa04c.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Revenue/Create.jsx"
   },
   "resources/js/Pages/Revenue/Index.jsx": {
-    "file": "assets/Index-d111df16.js",
+    "file": "assets/Index-7b592c03.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Revenue/Index.jsx"
   },
   "resources/js/Pages/Revenue/ReportIndex.jsx": {
-    "file": "assets/ReportIndex-ddb34952.js",
+    "file": "assets/ReportIndex-eab3194b.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Revenue/ReportIndex.jsx"
   },
   "resources/js/Pages/Revenue/Show.jsx": {
-    "file": "assets/Show-c207ce1e.js",
+    "file": "assets/Show-f839f624.js",
     "imports": [
       "resources/js/app.jsx",
-      "_AdminLayout-4c47e8e8.js"
+      "_AdminLayout-ee9fffc6.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Revenue/Show.jsx"
   },
   "resources/js/Pages/Users/Create.jsx": {
-    "file": "assets/Create-49095eed.js",
+    "file": "assets/Create-7e5972de.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -267,7 +275,7 @@
     "src": "resources/js/Pages/Users/Create.jsx"
   },
   "resources/js/Pages/Users/Edit.jsx": {
-    "file": "assets/Edit-bf8ceedc.js",
+    "file": "assets/Edit-35299a64.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -275,7 +283,7 @@
     "src": "resources/js/Pages/Users/Edit.jsx"
   },
   "resources/js/Pages/Users/Index.jsx": {
-    "file": "assets/Index-972aec42.js",
+    "file": "assets/Index-fb211443.js",
     "imports": [
       "resources/js/app.jsx"
     ],
@@ -288,6 +296,7 @@
       "resources/js/Pages/Auth/ForgotPassword.jsx",
       "resources/js/Pages/Auth/Login.jsx",
       "resources/js/Pages/Auth/ResetPassword.jsx",
+      "resources/js/Pages/Auth/VerifyEmail.jsx",
       "resources/js/Pages/Bidding/Create.jsx",
       "resources/js/Pages/Bidding/Index.jsx",
       "resources/js/Pages/Bidding/Show.jsx",
@@ -317,7 +326,7 @@
       "resources/js/Pages/Users/Edit.jsx",
       "resources/js/Pages/Users/Index.jsx"
     ],
-    "file": "assets/app-6cf1aba7.js",
+    "file": "assets/app-7d00598c.js",
     "isEntry": true,
     "src": "resources/js/app.jsx"
   }

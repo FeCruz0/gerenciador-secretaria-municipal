@@ -14,12 +14,13 @@ class UnitSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('units')->insert([
-            'name' => 'Guarda Municipal de Arraial do Cabo',
-            'sigla' => 'GMAC',
-            'city_id' => 3570,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // TODO: Configurar a unidade padrão para o município do projeto
+        // DB::table('units')->insert([
+        //     'name' => 'Nome da Unidade',
+        //     'sigla' => 'SIGLA',
+        //     'city_id' => 0, // ID da cidade no banco
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
     }
 }

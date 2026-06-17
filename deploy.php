@@ -5,8 +5,8 @@ require 'recipe/laravel.php';
 require 'contrib/npm.php';
 require 'contrib/php-fpm.php';
 
-set('application', 'semas.arraial.rj.gov.br');
-set('repository', 'ssh://git@github.com:22/pmaccode/semas-site.git');
+set('application', 'TODO: definir domínio de deploy');
+set('repository', 'git@github.com:FeCruz0/gerenciador-secretaria-municipal.git');
 set('http_user', 'www-data');
 set('git_tty', false);
 set('default_timeout', 0);

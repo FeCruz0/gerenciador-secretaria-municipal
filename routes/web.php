@@ -371,7 +371,7 @@ Route::prefix('meuambiente')->group(function(){
 
 //  ROTA PUBLICAÇÃO
 Route::prefix('publicacao')->group(function(){
-    Route::get('/publicacoessemas',[PublicationWebController::class, 'home'])->name('web_publication.home');
+    Route::get('/publicacoes',[PublicationWebController::class, 'home'])->name('web_publication.home');
     Route::get('/pesquisas',[PublicationWebController::class, 'researchs'])->name('web_publication.researchs');
 });
 
