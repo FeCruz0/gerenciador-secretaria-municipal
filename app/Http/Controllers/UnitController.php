@@ -15,6 +15,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class UnitController extends Controller
 {
@@ -24,19 +25,22 @@ class UnitController extends Controller
         protected UnitUpdateService $unitUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            $pageConfigs = ['pageHeader' => false];
             $unit = Unit::where('web', true)->first();
 
             $organizations = Organization::all();
             $units = $this->unitService->get();
-            return view('admin.unit.index', ['pageConfigs' => $pageConfigs], compact('organizations', 'units', 'unit'));
+            return Inertia::render('Unit/Index', [
+                'organizations' => $organizations,
+                'units' => $units,
+                'unit' => $unit
+            ]);
         } catch (\Throwable $throwable) {
             flash('Erro ao procurar as Unidades Cadastradas!')->error();
             return redirect()->back()->withInput();
@@ -47,7 +51,7 @@ class UnitController extends Controller
         UnitRequest $request
     ){
         if (! Gate::allows('Criar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -128,7 +132,7 @@ class UnitController extends Controller
         UnitRequest $request, $unit_id
     ){
         if (! Gate::allows('Editar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         //dd($request->all());
         try {
@@ -195,7 +199,7 @@ class UnitController extends Controller
 
             flash('Unidade editada com sucesso!')->success();
             DB::commit();
-            return redirect()->route('unidades');
+            return redirect()->back();
         }catch (\Throwable $throwable){
             DB::rollBack();
             flash('Erro ao editar a unidade!')->error();
@@ -206,15 +210,21 @@ class UnitController extends Controller
     public function show($unit_id)
     {
         if (! Gate::allows('Editar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $unit = Unit::find($unit_id);
             $organizations = Organization::all();
             $unit_selected = $this->unitService->show($unit_id);
+            $unit_selected->load('about');
             $social_media = SocialMedia::all();
-            return view('admin.unit.show', compact('social_media', 'unit', 'organizations', 'unit_selected'));
+            return Inertia::render('Unit/Show', [
+                'social_media' => $social_media,
+                'unit' => $unit,
+                'organizations' => $organizations,
+                'unit_selected' => $unit_selected
+            ]);
         } catch (\Exception $exception) {
             flash('Erro ao buscar a unidade!')->error();
             return redirect()->back()->withInput();
@@ -224,21 +234,16 @@ class UnitController extends Controller
     public function destroy($unit)
     {
         if (! Gate::allows('Deletar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $unit = Unit::find($unit);
             $unit->delete();
-            $pageConfigs = ['pageHeader' => false];
-
-            $organizations = Organization::all();
-            $units = $this->unitService->get();
-            flash('Unidade deletado com sucesso!')->success();
-            return view('admin.unit.index', ['pageConfigs' => $pageConfigs], compact('organizations', 'units'));
+            flash('Unidade deletada com sucesso!')->success();
+            return redirect('/unidades');
         } catch (\Exception $exception) {
             flash('Erro ao deletar a unidade!')->error();
-            dd($exception);
             return redirect()->back()->withInput();
         }
     }
@@ -247,7 +252,7 @@ class UnitController extends Controller
         Request $request
     ){
         if (! Gate::allows('Editar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
@@ -273,7 +278,7 @@ class UnitController extends Controller
         $social_media
     ){
         if (! Gate::allows('Editar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
@@ -294,7 +299,7 @@ class UnitController extends Controller
         Request $request
     ){
         if (! Gate::allows('Editar Unidades')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {

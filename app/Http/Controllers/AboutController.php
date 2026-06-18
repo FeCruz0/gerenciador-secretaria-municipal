@@ -53,7 +53,7 @@ class AboutController extends Controller
     ){
         
         if (! Gate::allows('Editar Sobre')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
@@ -108,7 +108,7 @@ class AboutController extends Controller
     ){
         
         if (! Gate::allows('Editar Sobre')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
