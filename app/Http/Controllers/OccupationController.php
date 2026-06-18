@@ -11,9 +11,9 @@ use Illuminate\Http\Request;
 use App\Services\OccupationService;
 use App\Services\OccupationCreateService;
 use App\Services\OccupationUpdateService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class OccupationController extends Controller
 {
@@ -23,51 +23,52 @@ class OccupationController extends Controller
         protected OccupationUpdateService $occupationUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Ocupações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
-            
-            $departaments = Departament::all();
-            $occupations = $this->occupationService->get();
-            return view('admin.occupation.index', ['pageConfigs' => $pageConfigs], compact('unit', 'occupations', 'departaments'));
-        } catch (\Throwable $throwable) {
-            dd($throwable);
-            flash('Erro ao procurar as Ocupações Cadastradas!')->error();
-            return redirect()->back()->withInput();
-        }
+        $unit = Unit::where('web', true)->first();
+        $departaments = Departament::all();
+        $occupations = $this->occupationService->get();
+
+        return Inertia::render('Occupation/Index', [
+            'unit'         => $unit,
+            'occupations'  => $occupations,
+            'departaments' => $departaments,
+        ]);
     }
 
     public function store(
         OccupationRequest $request
     ){
         if (! Gate::allows('Criar Ocupações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try {
             DB::beginTransaction();
             $this->occupationCreateService->create($request->toArray());
 
-            flash('Ocupação criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Ocupação criada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar nova ocupação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar nova ocupação!',
+            ]);
         }
     }
 
     public function show($occupation_id)
     {
         if (! Gate::allows('Ver e Listar Ocupações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
@@ -75,10 +76,18 @@ class OccupationController extends Controller
             $occupations = $this->occupationService->get();
             $departaments = Departament::all();
             $occupation_selected = $this->occupationService->show($occupation_id);
-            return view('admin.occupation.show', compact('occupation_selected', 'occupations', 'departaments', 'unit'));
+
+            return Inertia::render('Occupation/Index', [
+                'unit'                 => $unit,
+                'occupations'          => $occupations,
+                'departaments'         => $departaments,
+                'occupation_selected'  => $occupation_selected,
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar a ocupação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar a ocupação!',
+            ]);
         }
     }
 
@@ -86,40 +95,46 @@ class OccupationController extends Controller
         OccupationRequest $request, $occupation_id
     ){
         if (! Gate::allows('Editar Ocupações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try {
             DB::beginTransaction();
             $this->occupationUpdateService->update($request->toArray(), $occupation_id);
 
-            flash('Ocupação editada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Ocupação editada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar a ocupação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar a ocupação!',
+            ]);
         }
     }
 
     public function destroy($occupation)
     {
         if (! Gate::allows('Deletar Ocupações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $occupation = Occupation::find($occupation);
-            $occupation->delete();
-            $pageConfigs = ['pageHeader' => false];
-            flash('Ocupação deletada com sucesso!')->success();
-            $departaments = Departament::all();
-            $occupations = $this->occupationService->get();
-            return view('admin.occupation.index', ['pageConfigs' => $pageConfigs], compact('occupations', 'Departaments'));
+            $occupationModel = Occupation::findOrFail($occupation);
+            $occupationModel->delete();
+
+            return redirect()->route('ocupacoes.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Ocupação deletada com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar a ocupação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar a ocupação!',
+            ]);
         }
     }
 }
