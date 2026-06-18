@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Services\TypeExpenseService;
 use App\Services\TypeExpenseCreateService;
 use App\Services\TypeExpenseUpdateService;
 use App\Http\Requests\TypeExpenseRequest;
 use App\Models\TypeExpense;
-use App\Models\Unit;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class TypeExpenseController extends Controller
 {
@@ -20,59 +19,63 @@ class TypeExpenseController extends Controller
         protected TypeExpenseUpdateService $typeExpenseUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $type_expenses = TypeExpense::with('expenses')->latest()->get();
 
-            $type_expenses = TypeExpense::with('expenses')->latest()->get();
-            return view('admin.expense.type_index', ['pageConfigs' => $pageConfigs], compact('type_expenses', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Receitas Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Expense/TypeIndex', [
+            'type_expenses' => $type_expenses,
+        ]);
     }
 
     public function store(
         TypeExpenseRequest $request
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeExpenseCreateService->create($request->toArray());
 
-            flash('Tipo de Receita criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Despesa criado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar novo Tipo de Receita!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar novo Tipo de Despesa!',
+            ]);
         }
     }
 
     public function show($type_id)
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
             $type_expenses = TypeExpense::with('expenses')->latest()->get();
-            $type_selected = $this->typeExpenseService->show($type_id);
-            return view('admin.expense.type_show', compact('type_selected', 'type_expenses', 'unit'));
+            $type_selected = TypeExpense::findOrFail($type_id);
+
+            return Inertia::render('Expense/TypeIndex', [
+                'type_expenses'  => $type_expenses,
+                'type_selected'  => $type_selected,
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar o Tipo de Receita!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar o Tipo de Despesa!',
+            ]);
         }
     }
 
@@ -80,42 +83,46 @@ class TypeExpenseController extends Controller
         TypeExpenseRequest $request, $type_id
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeExpenseUpdateService->update($request->toArray(), $type_id);
 
-            flash('Tipo de Receita editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Despesa editado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar o Tipo de Receita!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o Tipo de Despesa!',
+            ]);
         }
     }
 
     public function destroy($type)
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $type = TypeExpense::find($type);
-            $type->delete();
-            $pageConfigs = ['pageHeader' => false];
+            $type_expense = TypeExpense::findOrFail($type);
+            $type_expense->delete();
 
-            $type_expenses = TypeExpense::with('expenses')->latest()->get();
-            return view('admin.expense.type_index', ['pageConfigs' => $pageConfigs], compact('type_expenses'));
+            return redirect()->route('despesa_tipos.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Despesa excluído com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o Tipo de Receita!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o Tipo de Despesa!',
+            ]);
         }
     }
-
-
-
 }

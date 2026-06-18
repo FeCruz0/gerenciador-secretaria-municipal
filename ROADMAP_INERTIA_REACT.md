@@ -91,7 +91,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 - [x] **Tipo de Receita** — `RevenueTypeController`
   - Views: `admin.revenue.type_*`
-- [ ] **Tipo de Despesa** — `TypeExpenseController`
+- [x] **Tipo de Despesa** — `TypeExpenseController`
   - Views: `admin.expense.type_*`
 - [ ] **Tipo de Acesso** — `TypeAccessController`
 - [ ] **Tipo de Solicitação** — `TypeRequestController`
