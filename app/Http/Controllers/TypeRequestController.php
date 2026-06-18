@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Services\TypeRequestService;
 use App\Services\TypeRequestCreateService;
 use App\Services\TypeRequestUpdateService;
 use App\Http\Requests\TypeRequestRequest;
 use App\Models\TypeRequest;
-use App\Models\Unit;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class TypeRequestController extends Controller
 {
@@ -20,59 +19,63 @@ class TypeRequestController extends Controller
         protected TypeRequestUpdateService $typeRequestUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $type_requests = TypeRequest::with('ombudsmen')->latest()->get();
 
-            $type_requests = TypeRequest::with('ombudsmen')->latest()->get();
-            return view('admin.ombudsman.request_index', ['pageConfigs' => $pageConfigs], compact('type_requests', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar os Requerimentos Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Ombudsman/RequestIndex', [
+            'type_requests' => $type_requests,
+        ]);
     }
 
     public function store(
         TypeRequestRequest $request
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeRequestCreateService->create($request->toArray());
 
-            flash('Tipo de Requerimento criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Solicitação criado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar novo Tipo de Requerimento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar novo Tipo de Solicitação!',
+            ]);
         }
     }
 
     public function show($request_id)
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
             $type_requests = TypeRequest::with('ombudsmen')->latest()->get();
-            $request_selected = $this->typeRequestService->show($request_id);
-            return view('admin.ombudsman.request_show', compact('request_selected', 'type_requests', 'unit'));
+            $request_selected = TypeRequest::findOrFail($request_id);
+
+            return Inertia::render('Ombudsman/RequestIndex', [
+                'type_requests'    => $type_requests,
+                'request_selected' => $request_selected,
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar o Tipo de Requerimento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar o Tipo de Solicitação!',
+            ]);
         }
     }
 
@@ -80,43 +83,46 @@ class TypeRequestController extends Controller
         TypeRequestRequest $request, $request_id
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeRequestUpdateService->update($request->toArray(), $request_id);
 
-            flash('Tipo de Requerimento editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Solicitação editado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar o Tipo de Requerimento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o Tipo de Solicitação!',
+            ]);
         }
     }
 
     public function destroy($request)
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $type_request = TypeRequest::find($request);
+            $type_request = TypeRequest::findOrFail($request);
             $type_request->delete();
-            $pageConfigs = ['pageHeader' => false];
 
-            $type_requests = TypeRequest::with('ombudsmen')->latest()->get();
-            flash('Tipo de Requerimento deletado com sucesso!')->success();
-            return view('admin.organization.index', ['pageConfigs' => $pageConfigs], compact('organizations'));
+            return redirect()->route('ouvidoria_requisicoes.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Solicitação excluído com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o Tipo de Requerimento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o Tipo de Solicitação!',
+            ]);
         }
     }
-
-
-
 }
