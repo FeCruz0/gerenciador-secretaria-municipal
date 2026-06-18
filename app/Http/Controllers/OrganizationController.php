@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\Gate;
 use App\Services\OrganizationService;
 use App\Services\OrganizationCreateService;
@@ -21,42 +21,43 @@ class OrganizationController extends Controller
         protected OrganizationUpdateService $organizationUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         /*if (! Gate::allows('Ver e Listar Organizações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $unit = Unit::where('web', true)->first();
+        $organizations = $this->organizationService->get();
 
-            $organizations = $this->organizationService->get();
-            return view('admin.organization.index', ['pageConfigs' => $pageConfigs], compact('organizations', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Organizações Cadastradas!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Organization/Index', [
+            'unit'          => $unit,
+            'organizations' => $organizations,
+        ]);
     }
 
     public function store(
         OrganizationRequest $request
     ){
         /*if (! Gate::allows('Criar Organizações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
         
         try {
             DB::beginTransaction();
             $this->organizationCreateService->create($request->toArray());
 
-            flash('Organização criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Organização criada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar nova organização!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar nova organização!',
+            ]);
         }
     }
 
@@ -64,58 +65,70 @@ class OrganizationController extends Controller
         OrganizationRequest $request, $organization_id
     ){
         /*if (! Gate::allows('Editar Organizações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
         
         try {
             DB::beginTransaction();
             $this->organizationUpdateService->update($request->toArray(), $organization_id);
 
-            flash('Organização editada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Organização editada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar a Organização!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar a Organização!',
+            ]);
         }
     }
 
     public function show($organization_id)
     {
         /*if (! Gate::allows('Editar Organizações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
 
         try{
             $unit = Unit::where('web', true)->first();
             $organizations = $this->organizationService->get();
             $organization_selected = $this->organizationService->show($organization_id);
-            return view('admin.organization.show', compact('organization_selected', 'organizations', 'unit'));
+
+            return Inertia::render('Organization/Index', [
+                'unit'                  => $unit,
+                'organizations'         => $organizations,
+                'organization_selected' => $organization_selected,
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar a Organização!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar a Organização!',
+            ]);
         }
     }
 
     public function destroy($organization)
     {
         /*if (! Gate::allows('Deletar Organizaçãos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
 
         try{
-            $organization = Organization::find($organization);
-            $organization->delete();
-            $pageConfigs = ['pageHeader' => false];
+            $organizationModel = Organization::findOrFail($organization);
+            $organizationModel->delete();
 
-            $organizations = $this->organizationService->get();
-            flash('Organização deletada com sucesso!')->success();
-            return view('admin.organization.index', ['pageConfigs' => $pageConfigs], compact('organizations'));
+            return redirect()->route('organizacoes.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Organização deletada com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar a Organização!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar a Organização!',
+            ]);
         }
     }
 }

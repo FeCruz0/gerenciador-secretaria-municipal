@@ -98,7 +98,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 - [x] **Unidade de Conservação** — `UnitConservationController` + `ConservationUnitController`
 - [x] **Departamento** — `DepartamentController`
 - [x] **Ocupação** — `OccupationController`
-- [ ] **Organização** — `OrganizationController`
+- [x] **Organização** — `OrganizationController`
 
 ### Grupo C — Baixa Prioridade (Conteúdo do site público / auxiliares)
 
