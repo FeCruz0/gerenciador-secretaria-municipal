@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Services\TypeAccessService;
 use App\Services\TypeAccessCreateService;
 use App\Services\TypeAccessUpdateService;
 use App\Http\Requests\TypeAccessRequest;
 use App\Models\TypeAccess;
-use App\Models\Unit;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class TypeAccessController extends Controller
 {
@@ -20,60 +19,63 @@ class TypeAccessController extends Controller
         protected TypeAccessUpdateService $typeAccessUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $type_accesses = TypeAccess::with('ombudsmen')->latest()->get();
 
-            $type_accesses = TypeAccess::with('ombudsmen')->latest()->get();
-            return view('admin.ombudsman.access_index', ['pageConfigs' => $pageConfigs], compact('type_accesses', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Acessos Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Ombudsman/AccessIndex', [
+            'type_accesses' => $type_accesses,
+        ]);
     }
 
     public function store(
         TypeAccessRequest $request
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeAccessCreateService->create($request->toArray());
 
-            flash('Tipo de Acesso criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Acesso criado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar novo Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar novo Tipo de Acesso!',
+            ]);
         }
     }
 
     public function show($access_id)
     {
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
             $type_accesses = TypeAccess::with('ombudsmen')->latest()->get();
-            $access_selected = $this->typeAccessService->show($access_id);
-            return view('admin.ombudsman.access_show', compact('access_selected', 'type_accesses', 'unit'));
+            $access_selected = TypeAccess::findOrFail($access_id);
+
+            return Inertia::render('Ombudsman/AccessIndex', [
+                'type_accesses'   => $type_accesses,
+                'access_selected' => $access_selected,
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar o Tipo de Acesso!',
+            ]);
         }
     }
 
@@ -81,51 +83,53 @@ class TypeAccessController extends Controller
         TypeAccessRequest $request, $access_id
     ){
         if (! Gate::allows('Editar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->typeAccessUpdateService->update($request->toArray(), $access_id);
 
-            flash('Tipo de Acesso editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Acesso editado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o Tipo de Acesso!',
+            ]);
         }
     }
 
     public function destroy($access)
     {
         if (! Gate::allows('Deletar Manifestações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $type_access = TypeAccess::find($access);
+            $type_access = TypeAccess::findOrFail($access);
             $type_access->delete();
-            $pageConfigs = ['pageHeader' => false];
 
-            $type_accesses = TypeAccess::with('ombudsmen')->latest()->get();
-            flash('Tipo de Acesso deletado com sucesso!')->success();
-            return view('admin.organization.index', ['pageConfigs' => $pageConfigs], compact('organizations'));
+            return redirect()->route('ouvidoria_acessos.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Acesso deletado com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o Tipo de Acesso!',
+            ]);
         }
     }
 
     //site
-    
     public function select()
     {
         $type_accesses = TypeAccess::all();
         return view('web.ouvidoria_access', compact('type_accesses'));
     }
-
-
-
 }
