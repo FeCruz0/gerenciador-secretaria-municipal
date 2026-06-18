@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Contracts\View\View;
 use App\Services\RevenueTypeService;
 use App\Services\RevenueTypeCreateService;
 use App\Services\RevenueTypeUpdateService;
 use App\Http\Requests\RevenueTypeRequest;
 use App\Models\RevenueType;
-use App\Models\Unit;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class RevenueTypeController extends Controller
 {
@@ -20,60 +19,63 @@ class RevenueTypeController extends Controller
         protected RevenueTypeUpdateService $revenueTypeUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Receitas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $revenue_types = RevenueType::with('revenues')->latest()->get();
 
-            $revenue_types = RevenueType::with('revenues')->latest()->get();
-            return view('admin.revenue.type_index', ['pageConfigs' => $pageConfigs], compact('revenue_types', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Acessos Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Revenue/TypeIndex', [
+            'revenue_types' => $revenue_types,
+        ]);
     }
 
     public function store(
         RevenueTypeRequest $request
     ){
         if (! Gate::allows('Editar Receitas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->revenueTypeCreateService->create($request->toArray());
 
-            flash('Tipo de Acesso criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Receita criado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao adicionar novo Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar novo Tipo de Receita!',
+            ]);
         }
     }
 
     public function show($type_id)
     {
         if (! Gate::allows('Editar Receitas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
             $revenue_types = RevenueType::with('revenues')->latest()->get();
-            $type_selected = $this->revenueTypeService->show($type_id);
-            return view('admin.revenue.type_show', compact('type_selected', 'revenue_types', 'unit'));
+            $type_selected = RevenueType::findOrFail($type_id);
+
+            return Inertia::render('Revenue/TypeIndex', [
+                'revenue_types'  => $revenue_types,
+                'type_selected'  => $type_selected,
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar o Tipo de Receita!',
+            ]);
         }
     }
 
@@ -81,42 +83,46 @@ class RevenueTypeController extends Controller
         RevenueTypeRequest $request, $type_id
     ){
         if (! Gate::allows('Editar Receitas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->revenueTypeUpdateService->update($request->toArray(), $type_id);
 
-            flash('Tipo de Acesso editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Receita editado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o Tipo de Receita!',
+            ]);
         }
     }
 
     public function destroy($type)
     {
         if (! Gate::allows('Editar Receitas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $type_type = RevenueType::find($type);
-            $type_type->delete();
-            $pageConfigs = ['pageHeader' => false];
+            $revenue_type = RevenueType::findOrFail($type);
+            $revenue_type->delete();
 
-            $revenue_types = RevenueType::with('revenues')->latest()->get();
-            return view('admin.revenue.type_index', ['pageConfigs' => $pageConfigs], compact('revenue_types'));
+            return redirect()->route('receita_tipos.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Tipo de Receita excluído com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o Tipo de Receita!',
+            ]);
         }
     }
-
-
-
 }

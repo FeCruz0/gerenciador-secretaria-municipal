@@ -89,7 +89,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 ### Grupo B — Média Prioridade (Configurações e tabelas de apoio)
 
-- [ ] **Tipo de Receita** — `RevenueTypeController`
+- [x] **Tipo de Receita** — `RevenueTypeController`
   - Views: `admin.revenue.type_*`
 - [ ] **Tipo de Despesa** — `TypeExpenseController`
   - Views: `admin.expense.type_*`
