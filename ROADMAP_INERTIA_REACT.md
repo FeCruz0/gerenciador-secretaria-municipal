@@ -80,7 +80,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
   - Views: `admin.directHire.*`
 - [x] **Projetos** — `ProjectController` + `ProjectCategoryController`
   - Views: `admin.project.*`
-- [ ] **Lideranças** — `LeadershipController`
+- [x] **Lideranças** — `LeadershipController`
   - Views: `admin.leadership.*`
 - [ ] **Unidade** — `UnitController`
   - Views: `admin.unit.*`
