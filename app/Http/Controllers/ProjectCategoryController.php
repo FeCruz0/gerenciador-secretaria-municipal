@@ -12,6 +12,7 @@ use App\Services\ProjectCategoryUpdateService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class ProjectCategoryController extends Controller
 {
@@ -23,20 +24,21 @@ class ProjectCategoryController extends Controller
         protected ProjectCategoryUpdateService $projectCategoryUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            $pageConfigs = ['pageHeader' => false];
             $unit = Unit::where('web', true)->first();
 
             $categories = ProjectCategory::with('projects')->latest()->get();
-            return view('admin.project.category_index', ['pageConfigs' => $pageConfigs], compact('categories', 'unit'));
+            return Inertia::render('Project/CategoryIndex', [
+                'categories' => $categories,
+                'unit' => $unit
+            ]);
         } catch (\Throwable $throwable) {
-            dd($throwable);
             flash('Erro ao procurar as Categorias Cadastradas!')->error();
             return redirect()->back()->withInput();
         }
@@ -46,7 +48,7 @@ class ProjectCategoryController extends Controller
         ProjectCategoryRequest $request
     ){
         if (! Gate::allows('Criar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -63,7 +65,6 @@ class ProjectCategoryController extends Controller
             return redirect()->back();
         }catch (\Throwable $throwable){
             DB::rollBack();
-            dd($throwable);
             flash('Erro Cadastrar!')->error();
             return redirect()->back()->withInput();
         }
@@ -72,16 +73,20 @@ class ProjectCategoryController extends Controller
     public function show($category_id)
     {
         if (! Gate::allows('Ver e Listar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $categories = ProjectCategory::with('projects')->latest()->get();
             $category_selected = $this->projectCategoryService->show($category_id);
             $unit = Unit::where('web', true)->first();
-            return view('admin.project.category_show', compact('category_selected', 'categories', 'unit'));
+            return Inertia::render('Project/CategoryShow', [
+                'category_selected' => $category_selected,
+                'categories' => $categories,
+                'unit' => $unit
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
+            flash('Erro ao buscar a Categoria!')->error();
             return redirect()->back()->withInput();
         }
     }
@@ -90,7 +95,7 @@ class ProjectCategoryController extends Controller
         ProjectCategoryRequest $request, $category_id
     ){
         if (! Gate::allows('Editar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -109,7 +114,7 @@ class ProjectCategoryController extends Controller
     public function destroy($projectcategory)
     {
         if (! Gate::allows('Deletar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{

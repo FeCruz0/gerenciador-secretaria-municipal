@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Throwable;
+use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
@@ -27,39 +28,43 @@ class ProjectController extends Controller
         protected ProjectUpdateService $projectUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
 
         if (! Gate::allows('Ver e Listar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            $pageConfigs = ['pageHeader' => false];
             $unit = Unit::where('web', true)->first();
 
             $projects = Project::with('category')
                                         ->latest()
                                         ->get();
-            return view('admin.project.index', ['pageConfigs' => $pageConfigs], compact('projects', 'unit'));
+            return Inertia::render('Project/Index', [
+                'projects' => $projects,
+                'unit' => $unit
+            ]);
         } catch (\Throwable $throwable) {
             flash('Erro ao procurar as Projetos Cadastrados!')->error();
             return redirect()->back()->withInput();
         }
     }
 
-    public function create(): View
+    public function create()
     {
         if (! Gate::allows('Criar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
-        $pageConfigs = ['pageHeader' => false];
         $unit = Unit::where('web', true)->first();
 
         $categories = ProjectCategory::with('projects')->orderBy('title', 'asc')->get();
 
-        return view('admin.project.create', ['pageConfigs' => $pageConfigs], compact('categories', 'unit'));
+        return Inertia::render('Project/Create', [
+            'categories' => $categories,
+            'unit' => $unit
+        ]);
 
     }
 
@@ -68,7 +73,7 @@ class ProjectController extends Controller
     ){
 
         if (! Gate::allows('Criar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -108,33 +113,33 @@ class ProjectController extends Controller
 
             $detail = $request->content;
 
-            $dom = new \domdocument();
-            $searchPage = mb_convert_encoding($detail, 'HTML-ENTITIES', "UTF-8");
-            $dom->loadHtml($searchPage);
-            $images = $dom->getelementsbytagname('img');
+            if ($detail) {
+                $dom = new \domdocument();
+                $searchPage = mb_convert_encoding($detail, 'HTML-ENTITIES', "UTF-8");
+                $dom->loadHtml($searchPage);
+                $images = $dom->getelementsbytagname('img');
 
-            foreach($images as $k => $img){
-                $data = $img->getattribute('src');
+                foreach($images as $k => $img){
+                    $data = $img->getattribute('src');
 
-                list($type, $data) = explode(';', $data);
-                list($type, $data)      = explode(',', $data);
+                    if (str_contains($data, ';') && str_contains($data, ',')) {
+                        list($type, $data) = explode(';', $data);
+                        list($type, $data)      = explode(',', $data);
 
-                $data = base64_decode($data);
-                $image_name= time().$k.'.png';
-                $path_img = 'content/'. $image_name;
-                Storage::disk('projects')->put('content/'. $image_name, $data);
+                        $data = base64_decode($data);
+                        $image_name= time().$k.'.png';
+                        $path_img = 'content/'. $image_name;
+                        Storage::disk('projects')->put('content/'. $image_name, $data);
 
-                //todo ----- arrumar os .env dos servidores
-                $img->removeattribute('src');
-                //production
-                $src_path = env('APP_URL') . '/storage/images/projects/'. $path_img;
-                //local test
-                //$src_path = env('APP_URL') . ':8080/storage/images/projects/'. $path_img;
-                $img->setattribute('class', 'img-content');
-                $img->setattribute('src', $src_path);
+                        $img->removeattribute('src');
+                        $src_path = env('APP_URL') . '/storage/images/projects/'. $path_img;
+                        $img->setattribute('class', 'img-content');
+                        $img->setattribute('src', $src_path);
+                    }
+                }
+
+                $detail = $dom->savehtml();
             }
-
-            $detail = $dom->savehtml();
 
             $projectData['content'] = $detail;
 
@@ -142,7 +147,7 @@ class ProjectController extends Controller
 
             flash('Projeto criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->route('projetos.index');
         }catch (\Throwable $throwable){
             DB::rollBack();
             flash('Erro Cadastrar!')->error();
@@ -154,22 +159,24 @@ class ProjectController extends Controller
     {
 
         if (! Gate::allows('Ver e Listar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            // $project = $this->projectService->show($project_id);
-
             $project = Project::with('files')->find($project_id);
 
             $project_files = $project->files;
-
 
             $unit = Unit::where('web', true)->first();
 
             $categories = ProjectCategory::with('projects')->orderBy('title', 'asc')->get();
 
-            return view('admin.project.show', compact('project', 'project_files', 'categories', 'unit' ));
+            return Inertia::render('Project/Show', [
+                'project' => $project,
+                'project_files' => $project_files,
+                'categories' => $categories,
+                'unit' => $unit
+            ]);
         } catch (\Exception $exception) {
             flash('Erro ao buscar a Projeto!')->error();
             return redirect()->back()->withInput();
@@ -180,15 +187,13 @@ class ProjectController extends Controller
         ProjectRequest $request, $project_id
     ){
         if (! Gate::allows('Editar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
 
             $project_old = Project::find($project_id);
-            //for server and local unlink
             $old_path = array("https://semas.arraial.rj.gov.br/storage/images/projects/");
-            //$old_path = array("http://localhost:8080/storage/images/projects/");
             $currentuuid = Auth::user()->id;
 
             if(isset($request['thumb'])){
@@ -225,61 +230,63 @@ class ProjectController extends Controller
 
             //unlinking old images
             $detail_old = $project_old->body;
-            $dom_old = new \domdocument();
-            $searchPageOld = mb_convert_encoding($detail_old, 'HTML-ENTITIES', "UTF-8");
-            $dom_old->loadHtml($searchPageOld);
-            $images_old = $dom_old->getelementsbytagname('img');
-
+            if ($detail_old) {
+                $dom_old = new \domdocument();
+                $searchPageOld = mb_convert_encoding($detail_old, 'HTML-ENTITIES', "UTF-8");
+                $dom_old->loadHtml($searchPageOld);
+                $images_old = $dom_old->getelementsbytagname('img');
+            } else {
+                $images_old = [];
+            }
 
             //saving new images
             $detail = $request->content;
 
-            $dom = new \domdocument();
-            $searchPage = mb_convert_encoding($detail, 'HTML-ENTITIES', "UTF-8");
-            $dom->loadHtml($searchPage);
-            $images = $dom->getelementsbytagname('img');
+            if ($detail) {
+                $dom = new \domdocument();
+                $searchPage = mb_convert_encoding($detail, 'HTML-ENTITIES', "UTF-8");
+                $dom->loadHtml($searchPage);
+                $images = $dom->getelementsbytagname('img');
 
-            foreach($images_old as $k => $img_old){
-                $path_for_unlink = $img_old->getattribute('src');
-                $path_for_unlink = str_replace($old_path, "", $path_for_unlink);
-                $verification = true;
-                foreach($images as $k => $img){
-                    $data = $img->getattribute('src');
-                    $data = str_replace($old_path, "", $data);
-                    if($path_for_unlink == $data){
-                        $verification = false;
-                        break;
+                foreach($images_old as $k => $img_old){
+                    $path_for_unlink = $img_old->getattribute('src');
+                    $path_for_unlink = str_replace($old_path, "", $path_for_unlink);
+                    $verification = true;
+                    foreach($images as $k => $img){
+                        $data = $img->getattribute('src');
+                        $data = str_replace($old_path, "", $data);
+                        if($path_for_unlink == $data){
+                            $verification = false;
+                            break;
+                        }
+                    }
+                    if($verification){
+                        Storage::disk('projects')->delete($path_for_unlink);
                     }
                 }
-                if($verification){
-                    Storage::disk('projects')->delete($path_for_unlink);
+
+                foreach($images as $k => $img){
+                    $data = $img->getattribute('src');
+                    $path_for_update = str_replace($old_path, "", $data);
+                    if (!(Storage::disk('projects')->exists($path_for_update))) {
+                        if (str_contains($data, ';') && str_contains($data, ',')) {
+                            list($type, $data) = explode(';', $data);
+                            list($type, $data)      = explode(',', $data);
+
+                            $data = base64_decode($data);
+                            $image_name= time().$k.'.png';
+                            $path_img = 'content/'. $image_name;
+                            Storage::disk('projects')->put('content/'. $image_name, $data);
+                            $img->removeattribute('src');
+                            $src_path = env('APP_URL') . '/storage/images/projects/'. $path_img;
+                            $img->setattribute('src', $src_path);
+                        }
+                    }
+                    $img->setattribute('class', 'img-content');
                 }
+
+                $detail = $dom->savehtml();
             }
-
-
-            foreach($images as $k => $img){
-                $data = $img->getattribute('src');
-                $path_for_update = str_replace($old_path, "", $data);
-                if (!(Storage::disk('projects')->exists($path_for_update))) {
-                    list($type, $data) = explode(';', $data);
-                    list($type, $data)      = explode(',', $data);
-
-                    $data = base64_decode($data);
-                    $image_name= time().$k.'.png';
-                    $path_img = 'content/'. $image_name;
-                    Storage::disk('projects')->put('content/'. $image_name, $data);
-                    //todo ----- arrumar os .env dos servidores
-                    $img->removeattribute('src');
-                    //production
-                    $src_path = env('APP_URL') . '/storage/images/projects/'. $path_img;
-                    //local test
-                    //$src_path = env('APP_URL') . ':8080/storage/images/projects/'. $path_img;
-                    $img->setattribute('src', $src_path);
-                }
-                $img->setattribute('class', 'img-content');
-            }
-
-            $detail = $dom->savehtml();
 
             $projectData['content'] = $detail;
 
@@ -299,7 +306,7 @@ class ProjectController extends Controller
     {
 
         if (! Gate::allows('Deletar Projetos')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
