@@ -53,7 +53,7 @@ class ConservationUnitUpdateService
                 if(isset($request['coverages'])){
                     foreach ($request['coverages'] as $coverage_id) {
 
-                        ConservationUnitCoverage::updated([
+                        ConservationUnitCoverage::create([
                             'coverage_id' => $coverage_id,
                             'conservation_unit_id' => $conservation_unit_id,
                         ]);

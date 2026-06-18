@@ -13,15 +13,14 @@ use App\Models\Leadership;
 use App\Models\News;
 use App\Models\Post;
 use App\Models\Project;
-use App\Services\PeopleService;
 use App\Services\ConservationUnitService;
 use App\Services\ConservationUnitCreateService;
 use App\Services\ConservationUnitUpdateService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ConservationUnitController extends Controller
 {
@@ -31,69 +30,59 @@ class ConservationUnitController extends Controller
         protected ConservationUnitUpdateService $conservationUnitUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
+        $conservation_units = ConservationUnit::with('type')->get();
 
-            $conservation_units = ConservationUnit::all();
-
-            return view('admin.conservation_unit.index', compact('conservation_units', 'pageConfigs'));
-        } catch (\Throwable $throwable) {
-            dd($throwable);
-            flash('Erro ao buscar registro!')->error();
-            flash('Erro ao procurar as Telefones Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('ConservationUnit/Index', [
+            'conservation_units' => $conservation_units,
+        ]);
     }
 
-    public function create(): View
+    public function create()
     {
         if (! Gate::allows('Criar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        $pageConfigs = ['pageHeader' => false];
-
         $coverages = Coverage::all();
+        $types = ConservationUnitType::all();
 
-        return view('admin.conservation_unit.create', compact('coverages'));
-
+        return Inertia::render('ConservationUnit/Create', [
+            'coverages' => $coverages,
+            'types' => $types,
+        ]);
     }
 
     public function store(
         ConservationUnitRequest $request
     ){
         if (! Gate::allows('Criar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         try {
             DB::beginTransaction();
 
-
             if(isset($request['thumb'])){
-
                 $request->validate([
                     'title' => 'required',
                     'thumb' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
                 ]);
 
-                $path = Storage::disk('conservation_units')->put('thumbs', $request->file( key:'thumb'));
+                $path = Storage::disk('conservation_units')->put('thumbs', $request->file('thumb'));
 
                 $conservationUnitData = array_merge(
                     $request->toArray(),
                     [
                         'thumb'  => $path,
-
                     ]
                 );
             }
             else{
-
                 $request->validate([
                     'title' => 'required'
                 ]);
@@ -104,111 +93,126 @@ class ConservationUnitController extends Controller
                         'user_id'  => '1',
                     ]
                 );
-
             }
 
             $this->conservationUnitCreateService->create($conservationUnitData);
 
-            flash('Unidade de conServação criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->route('unid_conservacao.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Unidade de Conservação criada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro Cadastrar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao cadastrar Unidade de Conservação!',
+            ]);
         }
     }
 
     public function show($conservation_unit_id)
     {
-
         if (! Gate::allows('Ver e Listar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
-
-            $conservation_unit = ConservationUnit::find($conservation_unit_id);
+            $conservation_unit = ConservationUnit::with('coverages')->findOrFail($conservation_unit_id);
             $coverages = Coverage::all();
             $types = ConservationUnitType::all();
 
-
-            $type = ConservationUnitType::orderBy('type', 'asc')->get();
-
-            return view('admin.conservation_unit.show', compact('conservation_unit', 'types', 'coverages', 'unit' ));
+            return Inertia::render('ConservationUnit/Show', [
+                'conservation_unit' => $conservation_unit,
+                'coverages' => $coverages,
+                'types' => $types,
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar a Unidade!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar a Unidade!',
+            ]);
         }
     }
-
 
     public function update(
         ConservationUnitRequest $request, $conservation_unit_id
     ){
         if (! Gate::allows('Editar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         try {
             DB::beginTransaction();
             if(isset($request['thumb'])){
-
                 $request->validate([
                     'title' => 'required',
                     'thumb' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
                 ]);
 
-                $path = Storage::disk('conservation_units')->put('thumbs', $request->file( key:'image'));
+                $path = Storage::disk('conservation_units')->put('thumbs', $request->file('thumb'));
 
                 $data = array_merge(
+                    [
+                        'objective' => null,
+                        'thumb_description' => null,
+                    ],
                     $request->toArray(),
                     [
-                        'path'  => $path
+                        'thumb'  => $path
                     ]
                 );
             }
             else{
-
                 $request->validate([
                     'title' => 'required'
                 ]);
 
                 $data = array_merge(
+                    [
+                        'objective' => null,
+                        'thumb_description' => null,
+                    ],
                     $request->toArray(),
                     [
                         'user_id'  => '1'
                     ]
                 );
-
             }
             $this->conservationUnitUpdateService->update($data, $conservation_unit_id);
 
-            flash('Unidade de Conservação editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->route('unid_conservacao.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Unidade de Conservação editada com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
-            dd($throwable);
             DB::rollBack();
-            flash('Erro ao editar Unidade de Conservação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar Unidade de Conservação!',
+            ]);
         }
     }
 
     public function destroy($conservationUnit)
     {
         if (! Gate::allows('Deletar Unidade de Conservacao')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $conservationUnit = ConservationUnit::find($conservationUnit);
-            $conservationUnit->delete();
-            flash('Telefone deletado com sucesso!')->success();
+            $conservationUnitModel = ConservationUnit::findOrFail($conservationUnit);
+            $conservationUnitModel->delete();
+            return redirect()->route('unid_conservacao.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Unidade de Conservação excluída com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o telefone!')->error();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar Unidade de Conservação!',
+            ]);
         }
-        return redirect()->back()->withInput();
     }
 
     public function web_index()
@@ -227,10 +231,10 @@ class ConservationUnitController extends Controller
             return view('web.unidade_de_conservacao.index', compact('posts', 'news', 'unit', 'projects', 'leaderships', 'galleries', 'conservation_units', 'types'));
 
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o telefone!')->error();
+            flash('Erro ao carregar a página!')->error();
+            return redirect()->back();
         }
     }
-
 
     public function web_show($conservation_unit_id)
     {

@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class ConservationUnit extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'conservation_units';
 
@@ -40,6 +42,6 @@ class ConservationUnit extends Model
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(ConservationUnitType::class, 'type_id');
+        return $this->belongsTo(ConservationUnitType::class, 'conservation_unit_type_id');
     }
 }
