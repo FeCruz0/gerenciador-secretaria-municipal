@@ -16,19 +16,19 @@ use App\Models\DirectHireWinner;
 use App\Models\People;
 use App\Models\Unit;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Inertia\Inertia;
 
 class HiringReportsController extends Controller
 {
 
     //------------------------reports
-    public function hiring_reports_index(): View
+    public function hiring_reports_index()
     {
         /*if (! Gate::allows('Ver e Listar Contratações Diretas')) {
-            return view('pages.not-authorized');
+            abort(403);
         }*/
 
         try{
@@ -56,14 +56,26 @@ class HiringReportsController extends Controller
                                         ->latest()
                                         ->get();
 
-            return view('admin.hiringReports.report_index', compact('unit', 'direct_hires', 'direct_hire_modalities', 'direct_hire_situations', 'direct_hire_winners', 
-                                                                    'bidding_modalities', 'bidding_situations', 'biddings',
-                                                                    'agreement_origins', 'agreement_types', 'agreement_situations', 'agreements'));
+            return Inertia::render('HiringReports/Index', [
+                'unit' => $unit,
+                'direct_hires' => $direct_hires,
+                'direct_hire_modalities' => $direct_hire_modalities,
+                'direct_hire_situations' => $direct_hire_situations,
+                'direct_hire_winners' => $direct_hire_winners,
+                'bidding_modalities' => $bidding_modalities,
+                'bidding_situations' => $bidding_situations,
+                'biddings' => $biddings,
+                'agreement_origins' => $agreement_origins,
+                'agreement_types' => $agreement_types,
+                'agreement_situations' => $agreement_situations,
+                'agreements' => $agreements,
+            ]);
         } catch (\Throwable $throwable) {
             flash('Erro ao procurar!')->error();
             return redirect()->back()->withInput();
         }
     }
+
     
     public function report_direct_hires_pdf(Request $request)
     {

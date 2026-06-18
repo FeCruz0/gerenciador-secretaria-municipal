@@ -82,9 +82,9 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
   - Views: `admin.project.*`
 - [x] **Lideranças** — `LeadershipController`
   - Views: `admin.leadership.*`
-- [ ] **Unidade** — `UnitController`
+- [x] **Unidade** — `UnitController`
   - Views: `admin.unit.*`
-- [ ] **Relatórios de Contratação** — `HiringReportsController`
+- [x] **Relatórios de Contratação** — `HiringReportsController`
   - Views: `admin.hiringReports.*`
 
 ### Grupo B — Média Prioridade (Configurações e tabelas de apoio)
