@@ -180,6 +180,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/galeria_imagens', GalleryController::class);
     //Main - Leadership
     Route::resource('/liderancas', LeadershipController::class);
+    Route::post('leadership_social_media_add', [LeadershipController::class, 'leadership_social_media_add'])->name('leadership_social_media_add');
+    Route::get('leadership_social_media_delete/{social_media}', [LeadershipController::class, 'leadership_social_media_delete'])->name('leadership_social_media_delete');
     //Main - about
     Route::resource('/sobres', AboutController::class);
     //Main - Banner

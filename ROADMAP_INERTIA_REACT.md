@@ -78,7 +78,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 - [x] **Contratações Diretas** — `DirectHireController` + `DirectHireWinnerController`
   - Views: `admin.directHire.*`
-- [ ] **Projetos** — `ProjectController` + `ProjectCategoryController`
+- [x] **Projetos** — `ProjectController` + `ProjectCategoryController`
   - Views: `admin.project.*`
 - [ ] **Lideranças** — `LeadershipController`
   - Views: `admin.leadership.*`

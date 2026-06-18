@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Throwable;
 
+use Inertia\Inertia;
+
 class LeadershipController extends Controller
 {
     public function __construct(
@@ -31,21 +33,22 @@ class LeadershipController extends Controller
         protected LeadershipUpdateService $leadershipUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         
         if (! Gate::allows('Ver e Listar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
-            $pageConfigs = ['pageHeader' => false];
-
             $unit = Unit::where('web', true)->first();
             $leaderships = Leadership::with('socialMedia')
                                         ->latest()
                                         ->get();
-            return view('admin.leadership.index', ['pageConfigs' => $pageConfigs], compact('leaderships', 'unit'));
+            return Inertia::render('Leadership/Index', [
+                'leaderships' => $leaderships,
+                'unit' => $unit
+            ]);
         } catch (\Throwable $throwable) {
             flash('Erro ao procurar as lideranças Cadastradas!')->error();
             return redirect()->back()->withInput();
@@ -57,7 +60,7 @@ class LeadershipController extends Controller
     ){
         
         if (! Gate::allows('Criar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
@@ -92,15 +95,20 @@ class LeadershipController extends Controller
     {
         
         if (! Gate::allows('Ver e Listar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
             $leadership = $this->leadershipService->show($leadership_id);
+            $leadership->load('socialMedia');
             $social_media = SocialMedia::all();
             $unit = Unit::where('web', true)->first();
 
-            return view('admin.leadership.show', compact('leadership', 'social_media', 'unit'));
+            return Inertia::render('Leadership/Show', [
+                'leadership' => $leadership,
+                'social_media' => $social_media,
+                'unit' => $unit
+            ]);
         } catch (\Exception $exception) {
             flash('Erro ao buscar a liderança!')->error();
             return redirect()->back()->withInput();
@@ -112,7 +120,7 @@ class LeadershipController extends Controller
     ){
          
         if (! Gate::allows('Editar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
         try {
             DB::beginTransaction();
@@ -151,7 +159,7 @@ class LeadershipController extends Controller
     {
         
         if (! Gate::allows('Deletar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try{
@@ -170,7 +178,7 @@ class LeadershipController extends Controller
         Request $request
     ){
         if (! Gate::allows('Editar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
@@ -196,7 +204,7 @@ class LeadershipController extends Controller
         $social_media
     ){
         if (! Gate::allows('Editar Liderança')) {
-            return view('pages.not-authorized');
+            abort(403, 'This action is unauthorized.');
         }
 
         try {
