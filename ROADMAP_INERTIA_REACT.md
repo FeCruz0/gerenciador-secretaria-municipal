@@ -96,7 +96,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 - [x] **Tipo de Acesso** — `TypeAccessController`
 - [x] **Tipo de Solicitação** — `TypeRequestController`
 - [x] **Unidade de Conservação** — `UnitConservationController` + `ConservationUnitController`
-- [ ] **Departamento** — `DepartamentController`
+- [x] **Departamento** — `DepartamentController`
 - [ ] **Ocupação** — `OccupationController`
 - [ ] **Organização** — `OrganizationController`
 

@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DepartamentRequest;
-use App\Models\City;
 use App\Models\Departament;
 use App\Models\Occupation;
 use App\Models\Unit;
-use Illuminate\Http\Request;
 use App\Services\DepartamentService;
 use App\Services\DepartamentCreateService;
 use App\Services\DepartamentUpdateService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
+use Inertia\Inertia;
 
 class DepartamentController extends Controller
 {
@@ -25,62 +23,67 @@ class DepartamentController extends Controller
         protected DepartamentUpdateService $departamentUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-            $unit = Unit::where('web', true)->first();
+        $departaments = Departament::with('unit')->latest()->get();
+        $units = Unit::all();
 
-            $units = Unit::all();
-            $departaments = $this->departamentService->get();
-            return view('admin.departament.index', ['pageConfigs' => $pageConfigs], compact('departaments', 'units', 'unit'));
-        } catch (\Throwable $throwable) {
-            flash('Erro ao procurar os Departamentos Cadastrados!')->error();
-            return redirect()->back()->withInput();
-        }
+        return Inertia::render('Department/Index', [
+            'departaments' => $departaments,
+            'units'        => $units,
+        ]);
     }
 
     public function store(
         DepartamentRequest $request
     ){
         if (! Gate::allows('Criar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         
         try {
             DB::beginTransaction();
             $this->departamentCreateService->create($request->toArray());
 
-            flash('Departamento criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Departamento criado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            dd($throwable);
-            flash('Erro ao adicionar o departamento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar o departamento!',
+            ]);
         }
     }
 
     public function show($departament_id)
     {
         if (! Gate::allows('Editar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $unit = Unit::where('web', true)->first();
-            $departaments = $this->departamentService->get();
+            $departaments = Departament::with('unit')->latest()->get();
             $units = Unit::all();
-            $departament_selected = $this->departamentService->show($departament_id);
-            return view('admin.departament.show', compact('departament_selected', 'departaments', 'units', 'unit'));
+            $departament_selected = Departament::findOrFail($departament_id);
+
+            return Inertia::render('Department/Index', [
+                'departaments'         => $departaments,
+                'units'                => $units,
+                'departament_selected' => $departament_selected,
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao buscar o departamento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar o departamento!',
+            ]);
         }
     }
 
@@ -88,40 +91,46 @@ class DepartamentController extends Controller
         DepartamentRequest $request, $departament_id
     ){
         if (! Gate::allows('Editar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try {
             DB::beginTransaction();
             $this->departamentUpdateService->update($request->toArray(), $departament_id);
 
-            flash('Departamento editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Departamento editado com sucesso!',
+            ]);
         }catch (\Throwable $throwable){
             DB::rollBack();
-            flash('Erro ao editar  o departamento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o departamento!',
+            ]);
         }
     }
 
     public function destroy($departament)
     {
         if (! Gate::allows('Deletar Departamentos')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try{
-            $departament = Departament::find($departament);
-            $departament->delete();
-            $pageConfigs = ['pageHeader' => false];
-            flash('Departamento deletado com sucesso!')->success();
-            $units = Unit::all();
-            $departaments = $this->departamentService->get();
-            return view('admin.departament.index', ['pageConfigs' => $pageConfigs], compact('departaments', 'units'));
+            $departamentModel = Departament::findOrFail($departament);
+            $departamentModel->delete();
+
+            return redirect()->route('departamentos.index')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Departamento deletado com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar  o departamento!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o departamento!',
+            ]);
         }
     }
     
