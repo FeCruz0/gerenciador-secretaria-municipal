@@ -5,16 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\BannerType;
 use App\Models\Unit;
-use App\Http\Requests\BannerRequest;
+use Illuminate\Http\Request;
 use App\Services\BannerService;
 use App\Services\BannerCreateService;
 use App\Services\BannerUpdateService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class BannerController extends Controller
 {
@@ -25,32 +23,29 @@ class BannerController extends Controller
         protected BannerUpdateService $bannerUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
-        
         if (! Gate::allows('Ver e Listar Banners')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
+        try {
             $unit = Unit::where('web', true)->first();
-
-            $types = BannerType::orderBy('title', 'asc')->get();
-            
-            return view('admin.banner.index', ['pageConfigs' => $pageConfigs], compact('types', 'unit'));
+            $types = BannerType::with('banner')->orderBy('title', 'asc')->get();
+            return Inertia::render('Banner/Index', compact('types', 'unit'));
         } catch (\Throwable $throwable) {
-            dd($throwable);
-            flash('Erro ao procurar as Banner Cadastrados!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao procurar os Banners Cadastrados!',
+            ]);
         }
     }
 
     public function update(
-        BannerRequest $request, $type_id
+        Request $request, $type_id
     ){
         if (! Gate::allows('Editar Banner')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         try {
             DB::beginTransaction();
@@ -60,7 +55,7 @@ class BannerController extends Controller
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048' 
             ]);
         
-            $path = Storage::disk('banners')->put('image', $request->file( key:'image'));
+            $path = Storage::disk('banners')->put('image', $request->file('image'));
 
             $bannerData = array_merge(
                 $request->toArray(),
@@ -71,14 +66,20 @@ class BannerController extends Controller
 
             $this->bannerUpdateService->update($bannerData, $type_id);
             
-            flash('Banner editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Banner editado com sucesso!',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $exception) {
             DB::rollBack();
-            dd($throwable);
-            flash('Erro ao editar!')->error();
-            return redirect()->back()->withInput();
+            throw $exception;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar!',
+            ]);
         }
     }
 }
