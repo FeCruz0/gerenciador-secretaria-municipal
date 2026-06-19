@@ -15,13 +15,14 @@ class ManagementReportCreateService
         //
     }
 
-    public function create(array $request)
+    public function create(array $request): \App\Models\ManagementReport
     {
         try {
             DB::beginTransaction();
-            $this->managementReportService->create($request);
+            $report = $this->managementReportService->create($request);
 
             DB::commit();
+            return $report;
         } catch (Exception $exception) {
             //Bugsnag::notifyException($exception);
             DB::rollBack();
