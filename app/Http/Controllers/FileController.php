@@ -27,7 +27,6 @@ use App\Models\Unit;
 use Illuminate\Http\Request;
 use App\Services\BiddingAgreementService;
 use App\Services\BiddingService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -35,6 +34,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Response;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Inertia\Inertia;
 use Exception;
 
 class FileController extends Controller
@@ -47,15 +47,8 @@ class FileController extends Controller
         protected FileUpdateService $fileUpdateService,
     ){}
 
-    //public function index(){}
-
-    public function store(
-        Request $request
-    ){
-
-        /*if (! Gate::allows('Criar Ouvidoria')) {
-            return view('pages.not-authorized');
-        }*/
+    public function store(Request $request)
+    {
         try {
             DB::beginTransaction();
             foreach ($request['files']['document'] as $key => $files) {
@@ -115,7 +108,6 @@ class FileController extends Controller
                             'file_id' => $file->id,
                             'project_id' => $request->id,
                         ]);
-
                     }
 
                     //Relatório de Gestão
@@ -136,56 +128,51 @@ class FileController extends Controller
             }
 
             DB::commit();
-            session()->flash('success', 'Registro criado com sucesso! ');
-
-            return redirect()->back();
-        }catch (Exception $exception){
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Registro criado com sucesso!'
+            ]);
+        } catch (Exception $exception) {
             DB::rollBack();
-            dd($exception);
-            session()->flash('error', 'Aconteceu algum erro!! ');
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Aconteceu algum erro!'
+            ]);
         }
     }
 
-    public function show($file_id): View
+    public function show($file_id)
     {
-        /*if (! Gate::allows('Criar Ouvidoria')) {
-            return view('pages.not-authorized');
-        }*/
-
-        try{
+        try {
             $file = File::find($file_id);
-            return view('admin.file.show', compact('file'));
-
+            return Inertia::render('File/Show', compact('file'));
         } catch (\Throwable $throwable) {
-            flash('Erro ao buscar registro!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao buscar registro!'
+            ]);
         }
     }
 
-    public function file_web($file_id): View
+    public function file_web($file_id)
     {
-        /*if (! Gate::allows('Criar Ouvidoria')) {
-            return view('pages.not-authorized');
-        }*/
-
-        try{
+        try {
             $unit = Unit::where('web', true)->first();
             $type_requests = TypeRequest::all();
             $file = File::find($file_id);
             return view('web.file.show', compact('file', 'unit', 'type_requests'));
-
         } catch (\Throwable $throwable) {
-            flash('Erro ao buscar registro!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao buscar registro!'
+            ]);
         }
     }
 
-    public function update(
-        FileRequest $request, $file_id
-    ){
+    public function update(FileRequest $request, $file_id)
+    {
         if (! Gate::allows('file-update')) {
-            return abort(401);
+            return abort(403);
         }
         try {
             DB::beginTransaction();
@@ -197,77 +184,80 @@ class FileController extends Controller
             );
             $this->fileUpdateService->update($fileData);
 
-            session()->flash('success', 'Registro editado com sucesso! ');
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type' => 'success',
+                'message' => 'Registro editado com sucesso!'
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            session()->flash('error', 'Aconteceu alguem erro!! ');
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Aconteceu algum erro!'
+            ]);
         }
     }
 
     public function destroy($file)
     {
         if (! Gate::allows('file-delete')) {
-            return abort(401);
+            return abort(403);
         }
-        try{
+        try {
             DB::beginTransaction();
-                $file = File::find($file);
-                $old_path = storage_path() . '/app/public/files/documents/' . str_replace("documents/", "", $file->url);
-                $file->delete();
+            $file = File::find($file);
+            $old_path = storage_path() . '/app/public/files/documents/' . str_replace("documents/", "", $file->url);
+            $file->delete();
+            if (file_exists($old_path)) {
                 unlink($old_path);
-                session()->flash('success', 'Registro deletado com sucesso! ');
+            }
             DB::commit();
-            if(count($file->agreements) > 0){
-                return redirect()->action(
+
+            $redirect = redirect()->back();
+
+            if (count($file->agreements) > 0) {
+                $redirect = redirect()->action(
                     [BiddingAgreementController::class, 'show'], ['licitacao_contrato' => $file->agreements->first()->id]
                 );
-            }
-            if(count($file->biddings) > 0){
-                return redirect()->action(
+            } elseif (count($file->biddings) > 0) {
+                $redirect = redirect()->action(
                     [BiddingController::class, 'show'], ['licitaco' => $file->biddings->first()->id]
                 );
-            }
-            if(count($file->legislations) > 0){
-                return redirect()->action(
+            } elseif (count($file->legislations) > 0) {
+                $redirect = redirect()->action(
                     [LegislationController::class, 'show'], ['legislaco' => $file->legislations->first()->id]
                 );
-            }
-            if(count($file->revenues) > 0){
-                return redirect()->action(
+            } elseif (count($file->revenues) > 0) {
+                $redirect = redirect()->action(
                     [RevenueController::class, 'show'], ['receita' => $file->revenues->first()->id]
                 );
-            }
-            if(count($file->expenses) > 0){
-                return redirect()->action(
+            } elseif (count($file->expenses) > 0) {
+                $redirect = redirect()->action(
                     [ExpenseController::class, 'show'], ['despesa' => $file->expenses->first()->id]
                 );
             }
+
+            return $redirect->with('flash', [
+                'type' => 'success',
+                'message' => 'Registro deletado com sucesso!'
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
             DB::rollBack();
-            session()->flash('error', 'Aconteceu alguem erro!! ');
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Aconteceu algum erro!'
+            ]);
         }
-
     }
-
 
     public function getRegisters(int $idType): JsonResponse
     {
-        if($idType == 0){
+        if ($idType == 0) {
             $registers = BiddingAgreement::all();
-
-        }
-        elseif($idType == 1){
+        } elseif ($idType == 1) {
             $registers = Bidding::all();
-
-        }
-        elseif($idType == 2){
+        } elseif ($idType == 2) {
             $registers = Legislation::all();
-
         }
         return Response::json($registers);
     }
