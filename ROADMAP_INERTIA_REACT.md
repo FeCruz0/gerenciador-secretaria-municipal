@@ -104,7 +104,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 - [x] **Notificações** — `NotificationController`
 - [x] **Galeria** — `GalleryController`
-- [ ] **Post** — `PostController`
+- [x] **Post** — `PostController`
 - [ ] **FAQ** — `FAQController`
 - [ ] **Banner** — `BannerController`
 - [ ] **Legislação (aux)** — `LegislationBondController`, `LegislationCategoryController`, `LegislationSituationController`, `LegislationSubjectController`

@@ -25,8 +25,9 @@ class PostUpdateService
             
             $post = Post::find($post_id);
             $medias = $post->media;
-            foreach($medias as $media){
-                if($media->type_media_id == 1 && isset( $request['path_web'])){
+            $hasPhoneMedia = false;
+            foreach ($medias as $media) {
+                if ($media->type_media_id == 1 && isset($request['path_web'])) {
 
                     Storage::disk('posts')->delete($media->url);
 
@@ -34,14 +35,24 @@ class PostUpdateService
                     $mediaLocal->url = $request['path_web'];
                     $mediaLocal->save();
                 }
-                if($media->type_media_id == 2 && isset( $request['path_phone'])){
-
-                    Storage::disk('posts')->delete($media->url);
-                    
-                    $mediaLocal = Media::find($media->id);
-                    $mediaLocal->url = $request['path_phone'];
-                    $mediaLocal->save();
+                if ($media->type_media_id == 2) {
+                    $hasPhoneMedia = true;
+                    if (isset($request['path_phone'])) {
+                        Storage::disk('posts')->delete($media->url);
+                        
+                        $mediaLocal = Media::find($media->id);
+                        $mediaLocal->url = $request['path_phone'];
+                        $mediaLocal->save();
+                    }
                 }
+            }
+
+            if (!$hasPhoneMedia && isset($request['path_phone'])) {
+                Media::create([
+                    'post_id'       => $post->id,
+                    'type_media_id' => 2,
+                    'url'           => $request['path_phone']
+                ]);
             }
             $post->user_id = $request['user_id'];
             if(isset($request['title'])){
