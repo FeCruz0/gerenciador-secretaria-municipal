@@ -102,7 +102,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 ### Grupo C — Baixa Prioridade (Conteúdo do site público / auxiliares)
 
-- [ ] **Notificações** — `NotificationController`
+- [x] **Notificações** — `NotificationController`
 - [ ] **Galeria** — `GalleryController`
 - [ ] **Post** — `PostController`
 - [ ] **FAQ** — `FAQController`
