@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Throwable;
 
 class GalleryController extends Controller
@@ -29,31 +30,29 @@ class GalleryController extends Controller
         protected GalleryUpdateService $galleryUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
-        
         if (! Gate::allows('Ver e Listar Galeria')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
-
+        try {
             $unit = Unit::where('web', true)->first();
             $galleries = Gallery::all();
-            return view('admin.gallery.index', ['pageConfigs' => $pageConfigs], compact('galleries', 'unit'));
+            return Inertia::render('Gallery/Index', compact('galleries', 'unit'));
         } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Imagens da Galeria Cadastradas!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao procurar as Imagens da Galeria Cadastradas!',
+            ]);
         }
     }
 
     public function store(
         GalleryRequest $request
     ){
-        
         if (! Gate::allows('Criar Galeria')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try {
@@ -78,41 +77,46 @@ class GalleryController extends Controller
 
             $this->galleryCreateService->create($galleryData);
             
-            flash('Galeria criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Galeria criada com sucesso!',
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Erro Cadastrar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro Cadastrar!',
+            ]);
         }
     }
 
     public function show($gallery_id)
     {
-        
         if (! Gate::allows('Ver e Listar Galeria')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $gallery = $this->galleryService->show($gallery_id);
 
             $unit = Unit::where('web', true)->first();
-            return view('admin.gallery.show', compact('gallery', 'unit'));
+            return Inertia::render('Gallery/Show', compact('gallery', 'unit'));
         } catch (\Exception $exception) {
-            flash('Erro ao buscar a imagem!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar a imagem!',
+            ]);
         }
     }
 
     public function update(
         GalleryRequest $request, $gallery_id
     ){
-         
         if (! Gate::allows('Editar Galeria')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
+
         try {
             DB::beginTransaction();
             
@@ -179,31 +183,38 @@ class GalleryController extends Controller
                 }
             }
             
-            flash('Galeria editada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'Galeria editada com sucesso!',
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Erro ao editar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar!',
+            ]);
         }
     }
 
     public function destroy($gallery_id)
     {
-        
         if (! Gate::allows('Deletar Galeria')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $for_delete = Gallery::find($gallery_id);
             $for_delete->delete();
-            flash('Galeria deletada com sucesso!')->success();
-            return redirect('/galeria_imagens');
+            return redirect('/galeria_imagens')->with('flash', [
+                'type'    => 'success',
+                'message' => 'Galeria deletada com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar a Galeria!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar a Galeria!',
+            ]);
         }
     }
     //web

@@ -1,0 +1,1 @@
+import{j as e}from"./app-ed39a1d5.js";function n({roles:i}){return e.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[e.jsx("h1",{children:"Criar Usuário"}),e.jsx("p",{children:"Selecione um perfil de acesso:"}),e.jsx("ul",{children:Object.keys(i).map(r=>e.jsx("li",{children:i[r]},r))})]})}export{n as default};
