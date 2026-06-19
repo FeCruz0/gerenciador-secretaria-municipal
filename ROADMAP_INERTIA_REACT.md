@@ -109,7 +109,7 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 - [x] **Banner** — `BannerController`
 - [x] **Legislação (aux)** — `LegislationBondController`, `LegislationCategoryController`, `LegislationSituationController`, `LegislationSubjectController`
 - [x] **Arquivo** — `FileController`
-- [ ] **Shortcut Web** — `ShortcutWebController`
+- [x] **Shortcut Web** — `ShortcutWebController`
 - [ ] **Relatório Gerencial** — `ManagementReportController`
 
 ### Grupo D — Manter em Blade por ora (Páginas estáticas / template site público)

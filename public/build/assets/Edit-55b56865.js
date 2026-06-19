@@ -1,1 +1,0 @@
-import{j as n}from"./app-4e1df8bd.js";function d({user:i,roles:t}){return n.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[n.jsxs("h1",{children:["Editar Usuário: ",i==null?void 0:i.name]}),n.jsxs("p",{children:["E-mail: ",i==null?void 0:i.email]})]})}export{d as default};
