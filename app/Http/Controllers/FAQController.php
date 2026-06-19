@@ -3,22 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests\FaqRequest;
 use App\Models\Departament;
-use App\Models\Banner;
 use App\Models\Faq;
-use App\Models\Gallery;
-use App\Models\Leadership;
-use App\Models\News;
-use App\Models\Project;
 use App\Models\Unit;
 use App\Services\FaqService;
 use App\Services\FaqCreateService;
 use App\Services\FaqUpdateService;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class FaqController extends Controller
 {
@@ -28,21 +22,22 @@ class FaqController extends Controller
         protected FaqUpdateService $faqUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Ver e Listar FAQs')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
+        try {
             $unit = Unit::where('web', true)->first();
             $departaments = Departament::all();
-            $faqs = Faq::all();
-            return view('admin.faq.index', ['pageConfigs' => $pageConfigs], compact('faqs', 'unit','departaments'));
+            $faqs = Faq::with('departament')->get();
+            return Inertia::render('Faq/Index', compact('faqs', 'unit', 'departaments'));
         } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as FAQs Cadastradas!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao procurar as FAQs Cadastradas!',
+            ]);
         }
     }
 
@@ -50,38 +45,54 @@ class FaqController extends Controller
         FaqRequest $request
     ){
         if (! Gate::allows('Criar FAQs')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
         try {
             DB::beginTransaction();
+
+            $request->validate([
+                'question'       => 'required|string',
+                'answer'         => 'required|string',
+                'departament_id' => 'required|exists:departaments,id',
+                'status'         => 'required|in:DRAFT,PENDING,PUBLISHED',
+            ]);
+
             $this->faqCreateService->create($request->toArray());
 
-            flash('FAQ criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'FAQ criada com sucesso!',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $exception) {
             DB::rollBack();
-            flash('Erro ao adicionar nova FAQ!')->error();
-            return redirect()->back()->withInput();
+            throw $exception;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao adicionar nova FAQ!',
+            ]);
         }
     }
 
-    public function show($faq_id): View
+    public function show($faq_id)
     {
         if (! Gate::allows('Ver e Listar FAQs')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $faq = Faq::find($faq_id);
-            $faqs = Faq::all();
+        try {
+            $faq = Faq::with('departament')->find($faq_id);
+            $faqs = Faq::with('departament')->get();
             $unit = Unit::where('web', true)->first();
             $departaments = Departament::all();
-            return view('admin.faq.show', compact('faq', 'faqs', 'unit', 'departaments'));
-            
+            return Inertia::render('Faq/Show', compact('faq', 'faqs', 'unit', 'departaments'));
         } catch (\Throwable $throwable) {
-            flash('Erro ao buscar registro!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao buscar registro!',
+            ]);
         }
     }
     
@@ -89,42 +100,57 @@ class FaqController extends Controller
         FaqRequest $request, $faq_id
     ){
         if (! Gate::allows('Editar FAQs')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
         try {
             DB::beginTransaction();
+
+            $request->validate([
+                'question'       => 'required|string',
+                'answer'         => 'required|string',
+                'departament_id' => 'required|exists:departaments,id',
+                'status'         => 'required|in:DRAFT,PENDING,PUBLISHED',
+            ]);
+
             $this->faqUpdateService->update($request->toArray(), $faq_id);
 
-            flash('FAQ editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            return redirect()->back()->with('flash', [
+                'type'    => 'success',
+                'message' => 'FAQ editada com sucesso!',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $exception) {
             DB::rollBack();
-            flash('Erro ao editar o FAQ!')->error();
-            return redirect()->back()->withInput();
+            throw $exception;
+        } catch (\Throwable $throwable) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao editar o FAQ!',
+            ]);
         }
     }
 
     public function destroy($faq)
     {
         if (! Gate::allows('Deletar FAQs')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $faq = Faq::find($faq);
-            $faq->delete();
+        try {
+            $faqObj = Faq::find($faq);
+            $faqObj->delete();
            
-            return redirect('/faqs');
-            flash('FAQ deletado com sucesso!')->success();
+            return redirect('/faqs')->with('flash', [
+                'type'    => 'success',
+                'message' => 'FAQ deletada com sucesso!',
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar o FAQ!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type'    => 'error',
+                'message' => 'Erro ao deletar o FAQ!',
+            ]);
         }
     }
-    //web
-    
-
-
 }
