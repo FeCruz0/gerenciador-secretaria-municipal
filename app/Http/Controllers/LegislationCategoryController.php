@@ -2,51 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\LegislationCategory;
 use App\Http\Requests\LegislationCategoryRequest;
 use App\Models\Unit;
 use App\Services\LegislationCategoryService;
 use App\Services\LegislationCategoryCreateService;
 use App\Services\LegislationCategoryUpdateService;
-use Illuminate\Contracts\View\View;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class LegislationCategoryController extends Controller
 {
-    
     public function __construct(
         protected LegislationCategoryService $legislationCategoryService,
         protected LegislationCategoryCreateService $legislationCategoryCreateService,
         protected LegislationCategoryUpdateService $legislationCategoryUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
+        try {
             $unit = Unit::where('web', true)->first();
-
             $legislation_categories = LegislationCategory::with('legislations')->latest()->get();
-            return view('admin.legislation.category_index', ['pageConfigs' => $pageConfigs], compact('unit', 'legislation_categories'));
+            
+            return Inertia::render('LegislationCategory/Index', compact('unit', 'legislation_categories'));
         } catch (\Throwable $throwable) {
-            dd($throwable);
-            flash('Erro ao procurar as Assuntos Cadastrados!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao procurar as Categorias Cadastradas!'
+            ]);
         }
     }
 
-    public function store(
-        LegislationCategoryRequest $request
-    ){
+    public function store(LegislationCategoryRequest $request)
+    {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
+        
         try {
             DB::beginTransaction();
             $fileData = array_merge(
@@ -57,68 +55,85 @@ class LegislationCategoryController extends Controller
             );
             $this->legislationCategoryCreateService->create($fileData);
             
-            flash('Categoria criada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            
+            return redirect('/legislacao_categorias')->with('flash', [
+                'type' => 'success',
+                'message' => 'Categoria criada com sucesso!'
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Erro Cadastrar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao cadastrar!'
+            ]);
         }
     }
 
     public function show($category_id)
     {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $unit = Unit::where('web', true)->first();
             $legislation_categories = LegislationCategory::with('legislations')->latest()->get();
             $category_selected = $this->legislationCategoryService->show($category_id);
-            return view('admin.legislation.category_show', compact('category_selected', 'legislation_categories', 'unit'));
+            
+            return Inertia::render('LegislationCategory/Show', compact('category_selected', 'legislation_categories', 'unit'));
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao buscar a categoria!'
+            ]);
         }
     }
 
-    public function update(
-        LegislationCategoryRequest $request, $category_id
-    ){
+    public function update(LegislationCategoryRequest $request, $category_id)
+    {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
+        
         try {
             DB::beginTransaction();
             $this->legislationCategoryUpdateService->update($request->toArray(), $category_id);
             
-            flash('Categoria editada com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            
+            return redirect('/legislacao_categorias/' . $category_id)->with('flash', [
+                'type' => 'success',
+                'message' => 'Categoria editada com sucesso!'
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Erro ao editar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao editar!'
+            ]);
         }
     }
 
     public function destroy($legislation_category)
     {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $category = LegislationCategory::find($legislation_category);
             $category->delete();
-            flash('Categoria deletada com sucesso!')->success();
-            return redirect('/legislacao_categorias');
+            
+            return redirect('/legislacao_categorias')->with('flash', [
+                'type' => 'success',
+                'message' => 'Categoria deletada com sucesso!'
+            ]);
         } catch (\Exception $exception) {
-            flash('Erro ao deletar a categoria!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao deletar a categoria!'
+            ]);
         }
     }
 }

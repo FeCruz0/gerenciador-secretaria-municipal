@@ -2,53 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\LegislationSituation;
 use App\Http\Requests\LegislationSituationRequest;
 use App\Models\Unit;
 use App\Services\LegislationSituationService;
 use App\Services\LegislationSituationCreateService;
 use App\Services\LegislationSituationUpdateService;
-use Illuminate\Contracts\View\View;
+use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class LegislationSituationController extends Controller
 {
-    
     public function __construct(
         protected LegislationSituationService $legislationSituationService,
         protected LegislationSituationCreateService $legislationSituationCreateService,
         protected LegislationSituationUpdateService $legislationSituationUpdateService,
     ){}
 
-    public function index(): View
+    public function index()
     {
-        
-        
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
-            $pageConfigs = ['pageHeader' => false];
+        try {
             $unit = Unit::where('web', true)->first();
-
             $legislation_situations = LegislationSituation::with('legislations')->latest()->get();
-            return view('admin.legislation.situation_index', ['pageConfigs' => $pageConfigs], compact('unit', 'legislation_situations'));
+            
+            return Inertia::render('LegislationSituation/Index', compact('unit', 'legislation_situations'));
         } catch (\Throwable $throwable) {
-            flash('Erro ao procurar as Assuntos Cadastrados!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao procurar as Situações Cadastradas!'
+            ]);
         }
     }
 
-    public function store(
-        LegislationSituationRequest $request
-    ){
-        
+    public function store(LegislationSituationRequest $request)
+    {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
+        
         try {
             DB::beginTransaction();
             $fileData = array_merge(
@@ -59,73 +55,85 @@ class LegislationSituationController extends Controller
             );
             $this->legislationSituationCreateService->create($fileData);
             
-            flash('Assunto criado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            
+            return redirect('/legislacao_situacoes')->with('flash', [
+                'type' => 'success',
+                'message' => 'Situação criada com sucesso!'
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Erro Cadastrar!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao cadastrar!'
+            ]);
         }
     }
 
     public function show($situation_id)
     {
-        
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $unit = Unit::where('web', true)->first();
             $legislation_situations = LegislationSituation::with('legislations')->latest()->get();
             $situation_selected = $this->legislationSituationService->show($situation_id);
-            return view('admin.legislation.situation_show', compact('situation_selected', 'legislation_situations', 'unit'));
+            
+            return Inertia::render('LegislationSituation/Show', compact('situation_selected', 'legislation_situations', 'unit'));
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao buscar o Tipo de Acesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao buscar a situação!'
+            ]);
         }
     }
 
-    public function update(
-        LegislationSituationRequest $request, $situation_id
-    ){
-        
+    public function update(LegislationSituationRequest $request, $situation_id)
+    {
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
+        
         try {
             DB::beginTransaction();
             $this->legislationSituationUpdateService->update($request->toArray(), $situation_id);
             
-            
-            flash('Assunto editado com sucesso!')->success();
             DB::commit();
-            return redirect()->back();
-        }catch (\Throwable $throwable){
+            
+            return redirect('/legislacao_situacoes/' . $situation_id)->with('flash', [
+                'type' => 'success',
+                'message' => 'Situação editada com sucesso!'
+            ]);
+        } catch (\Throwable $throwable) {
             DB::rollBack();
-            flash('Assunto editado com sucesso!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao editar!'
+            ]);
         }
     }
 
     public function destroy($legislation_situation)
     {
-        
         if (! Gate::allows('Editar Legislações')) {
-            return view('pages.not-authorized');
+            abort(403);
         }
 
-        try{
+        try {
             $situation = LegislationSituation::find($legislation_situation);
             $situation->delete();
-            flash('Situação deletada com sucesso!')->success();
-            return redirect('/legislacao_situacoes');
+            
+            return redirect('/legislacao_situacoes')->with('flash', [
+                'type' => 'success',
+                'message' => 'Situação deletada com sucesso!'
+            ]);
         } catch (\Exception $exception) {
-            dd($exception);
-            flash('Erro ao deletar a situação!')->error();
-            return redirect()->back()->withInput();
+            return redirect()->back()->with('flash', [
+                'type' => 'error',
+                'message' => 'Erro ao deletar a situação!'
+            ]);
         }
     }
 }
