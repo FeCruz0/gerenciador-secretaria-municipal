@@ -145,14 +145,14 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 ### Plano de remoção incremental
 
 **Etapa 7.1 — Auditoria**
-- [ ] Mapear todos os componentes React que usam classes Bootstrap (`btn`, `form-control`, `card`, `col-`, `row`, etc.)
-- [ ] Identificar componentes JS do Bootstrap em uso (Modals, Dropdowns, Tooltips)
-- [ ] Mapear tokens de design atuais (cores, espaçamentos) para migrar ao `tailwind.config.js`
+- [x] Mapear todos os componentes React que usam classes Bootstrap (`btn`, `form-control`, `card`, `col-`, `row`, etc.)
+- [x] Identificar componentes JS do Bootstrap em uso (Modals, Dropdowns, Tooltips)
+- [x] Mapear tokens de design atuais (cores, espaçamentos) para migrar ao `tailwind.config.js`
 
 **Etapa 7.2 — Instalar Tailwind + Shadcn/ui**
-- [ ] Instalar `tailwindcss`, `@tailwindcss/forms`, `@tailwindcss/typography` no pipeline Vite
-- [ ] Configurar `tailwind.config.js` com purge para `resources/js/**` e `resources/views/**`
-- [ ] Instalar `shadcn/ui` (ou `@radix-ui/react-*` + `class-variance-authority`) para componentes acessíveis
+- [x] Instalar `tailwindcss`, `@tailwindcss/forms`, `@tailwindcss/typography` no pipeline Vite
+- [x] Configurar `tailwind.config.js` com purge para `resources/js/**` e `resources/views/**`
+- [x] Instalar `shadcn/ui` (ou `@radix-ui/react-*` + `class-variance-authority`) para componentes acessíveis
 
 **Etapa 7.3 — Migração componente a componente**
 - [x] Criar design tokens (cores, espaçamentos) alinhados ao novo design
@@ -179,17 +179,25 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 **Etapa 8.1 — Criar Enum de Permissões**
 - [x] Criar `app/Enums/Permission.php` com todas as permissões como enum PHP 8.1
-- [ ] Substituir strings hardcoded nos controllers por `Permission::ENUM->value`
-- [ ] Atualizar seeders de permissões para usar os valores do enum
+- [x] Substituir strings hardcoded nos controllers por `Permission::ENUM->value`
+- [x] Atualizar seeders de permissões para usar os valores do enum
 
 **Etapa 8.2 — Compartilhar permissões com React**
 - [x] Atualizar `HandleInertiaRequests::share()` para incluir permissões do usuário
 - [x] Criar hook `usePermission()` no React para checar permissões no frontend
-- [ ] Aplicar controle de UI (mostrar/esconder botões) baseado nas permissões recebidas
+- [x] Aplicar controle de UI (mostrar/esconder botões) baseado nas permissões recebidas
 
 **Etapa 8.3 — Melhorar tratamento de não-autorizado**
-- [ ] Substituir `return view('pages.not-authorized')` por `abort(403)` nos controllers
+- [x] Substituir `return view('pages.not-authorized')` por `abort(403)` nos controllers
 - [x] Criar página `403.jsx` em Inertia para tratar o erro de forma elegante (Implementada como Error.jsx central para 403, 404, 500 e 503)
+
+---
+
+## 📋 Fase 9: Consolidação e Otimização Pós-Migração
+
+- [x] Remover view Blade legada obsoleta `not-authorized.blade.php`
+- [x] Validar a ausência de referências remanescentes no código
+- [x] Executar build de produção do Vite e validar suíte do PHPUnit
 
 ---
 
