@@ -159,13 +159,13 @@
                     <li class="">
                       <a class="employee-menu-link" href="{{ route('login') }}">Login</a></li>
                     <li class="">
-                      <a href="https://mail.hostinger.com/">E-mail</a></li>
+                      <a href="">E-mail</a></li>
                     <li class="">
-                      <a href="https://www.arraial.rj.gov.br/">PMAC</a>
+                      <a href="">Prefeitura</a>
                     <li class="">
-                      <a href="https://www.arraial.rj.gov.br/portal/diario-oficial">Diário Oficial</a></li>
+                      <a href="">Diário Oficial</a></li>
                     <li class="">
-                      <a href="http://45.70.23.82:8091/iss-web/">ISS - Arraial do Cabo</a></li>
+                      <a href="">ISS</a></li>
                   </ul>
                 </li>
 

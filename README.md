@@ -25,7 +25,7 @@ Aplicação de gestão administrativa municipal com painel de controle moderno, 
 - Todas as views de **autenticação** migradas para Inertia + React:
   - Login, Register, ForgotPassword, ResetPassword, ConfirmPassword, VerifyEmail
 - Painel principal migrado: Dashboard, Notícias, Pessoas, Usuários, Ouvidoria, Receita, Despesa, Licitações, Legislação
-- Remoção de referências ao cliente original (PMAC, SEMAS, CODE)
+- Remoção de referências ao cliente original
 - Infraestrutura padronizada com **docker-compose puro** (Sail descontinuado)
 
 ### 🔄 Em andamento
