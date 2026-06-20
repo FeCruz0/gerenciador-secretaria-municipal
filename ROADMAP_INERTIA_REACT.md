@@ -155,16 +155,17 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 - [ ] Instalar `shadcn/ui` (ou `@radix-ui/react-*` + `class-variance-authority`) para componentes acessíveis
 
 **Etapa 7.3 — Migração componente a componente**
-- [ ] Criar design tokens (cores, espaçamentos) alinhados ao novo design
-- [ ] Migrar `AdminLayout.jsx` para Tailwind
-- [ ] Migrar cada página React progressivamente (começar pelas mais simples)
-- [ ] Remover imports do Bootstrap dos layouts Blade
+- [x] Criar design tokens (cores, espaçamentos) alinhados ao novo design
+- [x] Migrar `AdminLayout.jsx` para Tailwind
+- [x] Migrar cada página React progressivamente (começar pelas mais simples)
+- [x] Remover imports do Bootstrap dos layouts Blade
 
 **Etapa 7.4 — Limpeza final**
-- [ ] Remover `bootstrap` do `package.json`
-- [ ] Remover arquivos `public/css/core.css`, `public/vendors/`, etc.
-- [ ] Remover referências a Bootstrap nos layouts Blade legados
-- [ ] Validar build sem Bootstrap
+- [x] Remover `bootstrap` do `package.json`
+- [x] Remover arquivos `public/css/core.css`, `public/vendors/`, etc.
+- [x] Remover referências a Bootstrap nos layouts Blade legados
+- [x] Validar build sem Bootstrap
+
 
 > [!WARNING]
 > Não iniciar a Fase 7 antes de concluir a Fase 6. Remover Bootstrap antes de migrar todos os módulos quebrará as views Blade ainda ativas.
