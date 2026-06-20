@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use App\Enums\Permission;
 use Throwable;
 
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class LeadershipController extends Controller
     public function index()
     {
         
-        if (! Gate::allows('Ver e Listar Liderança')) {
+        if (! Gate::allows(Permission::VIEW_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -59,7 +60,7 @@ class LeadershipController extends Controller
         LeadershipRequest $request
     ){
         
-        if (! Gate::allows('Criar Liderança')) {
+        if (! Gate::allows(Permission::CREATE_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -94,7 +95,7 @@ class LeadershipController extends Controller
     public function show($leadership_id)
     {
         
-        if (! Gate::allows('Ver e Listar Liderança')) {
+        if (! Gate::allows(Permission::VIEW_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -119,7 +120,7 @@ class LeadershipController extends Controller
         LeadershipRequest $request, $leadership_id
     ){
          
-        if (! Gate::allows('Editar Liderança')) {
+        if (! Gate::allows(Permission::EDIT_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -158,7 +159,7 @@ class LeadershipController extends Controller
     public function destroy($leadership_id)
     {
         
-        if (! Gate::allows('Deletar Liderança')) {
+        if (! Gate::allows(Permission::DELETE_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -177,7 +178,7 @@ class LeadershipController extends Controller
     public function leadership_social_media_add(
         Request $request
     ){
-        if (! Gate::allows('Editar Liderança')) {
+        if (! Gate::allows(Permission::EDIT_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -203,7 +204,7 @@ class LeadershipController extends Controller
     public function leadership_social_media_delete(
         $social_media
     ){
-        if (! Gate::allows('Editar Liderança')) {
+        if (! Gate::allows(Permission::EDIT_LEADERSHIP->value)) {
             abort(403, 'This action is unauthorized.');
         }
 

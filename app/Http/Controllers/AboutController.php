@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Throwable;
+use App\Enums\Permission;
 
 class AboutController extends Controller
 {
@@ -32,8 +33,8 @@ class AboutController extends Controller
     public function create(): View
     {
         
-        if (! Gate::allows('Ver e Listar Sobre')) {
-            return view('pages.not-authorized');
+        if (! Gate::allows(Permission::VIEW_ABOUT->value)) {
+            abort(403);
         }
 
         try{
@@ -52,8 +53,8 @@ class AboutController extends Controller
         AboutRequest $request
     ){
         
-        if (! Gate::allows('Editar Sobre')) {
-            abort(403, 'This action is unauthorized.');
+        if (! Gate::allows(Permission::EDIT_ABOUT->value)) {
+            abort(403);
         }
 
         try {
@@ -87,8 +88,8 @@ class AboutController extends Controller
     public function show($about_id)
     {
         
-        if (! Gate::allows('Ver e Listar Sobre')) {
-            return view('pages.not-authorized');
+        if (! Gate::allows(Permission::VIEW_ABOUT->value)) {
+            abort(403);
         }
 
         try{
@@ -107,8 +108,8 @@ class AboutController extends Controller
         AboutRequest $request, $about_id
     ){
         
-        if (! Gate::allows('Editar Sobre')) {
-            abort(403, 'This action is unauthorized.');
+        if (! Gate::allows(Permission::EDIT_ABOUT->value)) {
+            abort(403);
         }
 
         try {
@@ -156,8 +157,8 @@ class AboutController extends Controller
     public function destroy($about_id)
     {
         
-        if (! Gate::allows('Deletar Sobre')) {
-            return view('pages.not-authorized');
+        if (! Gate::allows(Permission::DELETE_ABOUT->value)) {
+            abort(403);
         }
 
         try{

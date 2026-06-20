@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Inertia\Inertia;
+use App\Enums\Permission;
 
 class DirectHireController extends Controller
 {
@@ -36,7 +37,7 @@ class DirectHireController extends Controller
 
     public function index()
     {
-        if (! Gate::allows('Ver e Listar Contratações Diretas')) {
+        if (! Gate::allows(Permission::VIEW_DIRECT_HIRES->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -58,7 +59,7 @@ class DirectHireController extends Controller
 
     public function create()
     {
-        if (! Gate::allows('Criar Contratações Diretas')) {
+        if (! Gate::allows(Permission::CREATE_DIRECT_HIRES->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -77,7 +78,7 @@ class DirectHireController extends Controller
     public function store(
         DirectHireRequest $request
     ){
-        if (! Gate::allows('Criar Contratações Diretas')) {
+        if (! Gate::allows(Permission::CREATE_DIRECT_HIRES->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -102,7 +103,7 @@ class DirectHireController extends Controller
 
     public function show($id)
     {
-        if (! Gate::allows('Ver e Listar Contratações Diretas')) {
+        if (! Gate::allows(Permission::VIEW_DIRECT_HIRES->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -135,7 +136,7 @@ class DirectHireController extends Controller
     public function update(
         DirectHireRequest $request, $direct_hire_id
     ){
-        if (! Gate::allows('Editar Contratações Diretas')) {
+        if (! Gate::allows(Permission::EDIT_DIRECT_HIRES->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {

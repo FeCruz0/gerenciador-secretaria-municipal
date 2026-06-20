@@ -24,6 +24,7 @@ use App\Services\BiddingUpdateService;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Enums\Permission;
 
 class BiddingController extends Controller
 {
@@ -36,7 +37,7 @@ class BiddingController extends Controller
 
     public function index()
     {
-        if (! Gate::allows('Ver e Listar Licitações')) {
+        if (! Gate::allows(Permission::VIEW_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -56,7 +57,7 @@ class BiddingController extends Controller
 
     public function create()
     {
-        if (! Gate::allows('Criar Licitações')) {
+        if (! Gate::allows(Permission::CREATE_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -75,7 +76,7 @@ class BiddingController extends Controller
     public function store(
         BiddingCreateRequest $request
     ){
-        if (! Gate::allows('Editar Licitações')) {
+        if (! Gate::allows(Permission::EDIT_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -100,7 +101,7 @@ class BiddingController extends Controller
 
     public function show($bidding_id)
     {
-        if (! Gate::allows('Ver e Listar Licitações')) {
+        if (! Gate::allows(Permission::VIEW_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -129,7 +130,7 @@ class BiddingController extends Controller
     public function update(
         BiddingCreateRequest $request, $bidding_id
     ){
-        if (! Gate::allows('Editar Licitações')) {
+        if (! Gate::allows(Permission::EDIT_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -148,7 +149,7 @@ class BiddingController extends Controller
 
     public function destroy($bidding_id)
     {
-        if (! Gate::allows('Deletar Licitações')) {
+        if (! Gate::allows(Permission::DELETE_BIDDINGS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 

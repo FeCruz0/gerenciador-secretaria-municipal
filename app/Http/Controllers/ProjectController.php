@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Throwable;
 use Inertia\Inertia;
+use App\Enums\Permission;
 
 class ProjectController extends Controller
 {
@@ -31,7 +32,7 @@ class ProjectController extends Controller
     public function index()
     {
 
-        if (! Gate::allows('Ver e Listar Projetos')) {
+        if (! Gate::allows(Permission::VIEW_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -53,7 +54,7 @@ class ProjectController extends Controller
 
     public function create()
     {
-        if (! Gate::allows('Criar Projetos')) {
+        if (! Gate::allows(Permission::CREATE_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -72,7 +73,7 @@ class ProjectController extends Controller
         ProjectRequest $request
     ){
 
-        if (! Gate::allows('Criar Projetos')) {
+        if (! Gate::allows(Permission::CREATE_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -158,7 +159,7 @@ class ProjectController extends Controller
     public function show($project_id)
     {
 
-        if (! Gate::allows('Ver e Listar Projetos')) {
+        if (! Gate::allows(Permission::VIEW_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -186,7 +187,7 @@ class ProjectController extends Controller
     public function update(
         ProjectRequest $request, $project_id
     ){
-        if (! Gate::allows('Editar Projetos')) {
+        if (! Gate::allows(Permission::EDIT_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -305,7 +306,7 @@ class ProjectController extends Controller
     public function destroy($project_id)
     {
 
-        if (! Gate::allows('Deletar Projetos')) {
+        if (! Gate::allows(Permission::DELETE_PROJECTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 

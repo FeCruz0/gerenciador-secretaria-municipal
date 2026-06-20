@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Enums\Permission;
 
 class UnitController extends Controller
 {
@@ -27,7 +28,7 @@ class UnitController extends Controller
 
     public function index()
     {
-        if (! Gate::allows('Ver e Listar Unidades')) {
+        if (! Gate::allows(Permission::VIEW_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -50,7 +51,7 @@ class UnitController extends Controller
     public function store(
         UnitRequest $request
     ){
-        if (! Gate::allows('Criar Unidades')) {
+        if (! Gate::allows(Permission::CREATE_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         try {
@@ -131,7 +132,7 @@ class UnitController extends Controller
     public function update(
         UnitRequest $request, $unit_id
     ){
-        if (! Gate::allows('Editar Unidades')) {
+        if (! Gate::allows(Permission::EDIT_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
         //dd($request->all());
@@ -209,7 +210,7 @@ class UnitController extends Controller
 
     public function show($unit_id)
     {
-        if (! Gate::allows('Editar Departamentos')) {
+        if (! Gate::allows(Permission::EDIT_DEPARTMENTS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -233,7 +234,7 @@ class UnitController extends Controller
 
     public function destroy($unit)
     {
-        if (! Gate::allows('Deletar Unidades')) {
+        if (! Gate::allows(Permission::DELETE_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -251,7 +252,7 @@ class UnitController extends Controller
     public function unidade_social_media_add(
         Request $request
     ){
-        if (! Gate::allows('Editar Unidades')) {
+        if (! Gate::allows(Permission::EDIT_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -277,7 +278,7 @@ class UnitController extends Controller
     public function unidade_social_media_delete(
         $social_media
     ){
-        if (! Gate::allows('Editar Unidades')) {
+        if (! Gate::allows(Permission::EDIT_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -298,7 +299,7 @@ class UnitController extends Controller
     public function unidade_social_media_update(
         Request $request
     ){
-        if (! Gate::allows('Editar Unidades')) {
+        if (! Gate::allows(Permission::EDIT_UNITS->value)) {
             abort(403, 'This action is unauthorized.');
         }
 
