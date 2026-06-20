@@ -1,1 +1,0 @@
-import{s as e,t}from"./app-DocjpYs0.js";e();var n=t();function r({news:e,tags:t,categories:r,unit:i}){return(0,n.jsxs)(`div`,{style:{padding:`2rem`,fontFamily:`sans-serif`},children:[(0,n.jsxs)(`h1`,{children:[`Visualizar Notícia: `,e?.title]}),(0,n.jsxs)(`p`,{children:[`Unidade: `,i?.name]}),(0,n.jsx)(`div`,{dangerouslySetInnerHTML:{__html:e?.content}})]})}export{r as default};

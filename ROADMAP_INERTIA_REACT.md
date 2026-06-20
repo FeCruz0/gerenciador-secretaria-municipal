@@ -178,18 +178,18 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 > Ver análise completa em `docs/spatie-analysis.md`.
 
 **Etapa 8.1 — Criar Enum de Permissões**
-- [ ] Criar `app/Enums/Permission.php` com todas as permissões como enum PHP 8.1
+- [x] Criar `app/Enums/Permission.php` com todas as permissões como enum PHP 8.1
 - [ ] Substituir strings hardcoded nos controllers por `Permission::ENUM->value`
 - [ ] Atualizar seeders de permissões para usar os valores do enum
 
 **Etapa 8.2 — Compartilhar permissões com React**
-- [ ] Atualizar `HandleInertiaRequests::share()` para incluir permissões do usuário
-- [ ] Criar hook `usePermission()` no React para checar permissões no frontend
+- [x] Atualizar `HandleInertiaRequests::share()` para incluir permissões do usuário
+- [x] Criar hook `usePermission()` no React para checar permissões no frontend
 - [ ] Aplicar controle de UI (mostrar/esconder botões) baseado nas permissões recebidas
 
 **Etapa 8.3 — Melhorar tratamento de não-autorizado**
 - [ ] Substituir `return view('pages.not-authorized')` por `abort(403)` nos controllers
-- [ ] Criar página `403.jsx` em Inertia para tratar o erro de forma elegante
+- [x] Criar página `403.jsx` em Inertia para tratar o erro de forma elegante (Implementada como Error.jsx central para 403, 404, 500 e 503)
 
 ---
 

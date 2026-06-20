@@ -36,5 +36,15 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e, $request) {
+            if ($request->header('X-Inertia')) {
+                return \Inertia\Inertia::render('Error', [
+                    'status' => $e->getStatusCode(),
+                ])
+                ->toResponse($request)
+                ->setStatusCode($e->getStatusCode());
+            }
+        });
     }
 }

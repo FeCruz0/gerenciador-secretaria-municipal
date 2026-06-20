@@ -44,6 +44,9 @@ class HandleInertiaRequests extends Middleware
                     'profile_photo_path' => $request->user()->profile_photo_path,
                     'occupation' => $request->user()->occupations->first()?->title ?? 'Desenvolvedor',
                 ] : null,
+                'permissions' => $request->user()
+                    ? $request->user()->getAllPermissions()->pluck('name')->toArray()
+                    : [],
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
