@@ -1,1 +1,0 @@
-import{s as e,t}from"./app-C4_Vxdwk.js";e();var n=t();function r({user:e,roles:t}){return(0,n.jsxs)(`div`,{style:{padding:`2rem`,fontFamily:`sans-serif`},children:[(0,n.jsxs)(`h1`,{children:[`Editar Usuário: `,e?.name]}),(0,n.jsxs)(`p`,{children:[`E-mail: `,e?.email]})]})}export{r as default};

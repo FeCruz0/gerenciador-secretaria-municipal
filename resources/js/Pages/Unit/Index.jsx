@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import AdminLayout from '../../Components/Layout/AdminLayout';
+import usePermission from '../../Hooks/usePermission';
 
 export default function UnitIndex({ units, organizations }) {
     const [search, setSearch] = useState('');
+    const { hasPermission } = usePermission();
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -60,12 +62,13 @@ export default function UnitIndex({ units, organizations }) {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: hasPermission('Criar Unidades') ? '1fr 2fr' : '1fr', gap: 24 }}>
                 {/* Painel de Cadastro */}
-                <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155', height: 'fit-content' }}>
-                    <h3 style={{ color: '#f1f5f9', fontSize: 16, marginTop: 0, marginBottom: 20 }}>Nova Unidade</h3>
+                {hasPermission('Criar Unidades') && (
+                    <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155', height: 'fit-content' }}>
+                        <h3 style={{ color: '#f1f5f9', fontSize: 16, marginTop: 0, marginBottom: 20 }}>Nova Unidade</h3>
 
-                    <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit}>
                         <div style={groupStyle}>
                             <label style={labelStyle}>Nome *</label>
                             <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} style={fieldStyle} required />
@@ -155,8 +158,9 @@ export default function UnitIndex({ units, organizations }) {
                         <button type="submit" disabled={processing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ width: '100%', opacity: processing ? 0.6 : 1 }}>
                             {processing ? 'Salvando...' : 'Salvar Unidade'}
                         </button>
-                    </form>
-                </div>
+                        </form>
+                    </div>
+                )}
 
                 {/* Listagem */}
                 <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155', height: 'fit-content' }}>
@@ -199,12 +203,14 @@ export default function UnitIndex({ units, organizations }) {
                                                 >
                                                     Editar
                                                 </Link>
-                                                <button 
-                                                    onClick={() => handleDelete(u.id)} 
-                                                    style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}
-                                                >
-                                                    Excluir
-                                                </button>
+                                                {hasPermission('Deletar Unidades') && (
+                                                    <button 
+                                                        onClick={() => handleDelete(u.id)} 
+                                                        style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>

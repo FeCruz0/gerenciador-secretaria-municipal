@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import AdminLayout from '../../Components/Layout/AdminLayout';
+import usePermission from '../../Hooks/usePermission';
 
 export default function ProjectIndex({ projects }) {
     const [search, setSearch] = useState('');
+    const { hasPermission } = usePermission();
 
     const filtered = projects.filter(p =>
         p.title?.toLowerCase().includes(search.toLowerCase())
@@ -32,8 +34,12 @@ export default function ProjectIndex({ projects }) {
                     <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros</p>
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
-                    <Link href={route('projeto_categorias.index')} style={{ padding: '8px 18px', borderRadius: 8, background: '#334155', color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Categorias</Link>
-                    <Link href={route('projetos.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Novo Projeto</Link>
+                    {hasPermission('Ver e Listar Projetos') && (
+                        <Link href={route('projeto_categorias.index')} style={{ padding: '8px 18px', borderRadius: 8, background: '#334155', color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>Categorias</Link>
+                    )}
+                    {hasPermission('Criar Projetos') && (
+                        <Link href={route('projetos.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Novo Projeto</Link>
+                    )}
                 </div>
             </div>
 
@@ -74,7 +80,9 @@ export default function ProjectIndex({ projects }) {
                                 <td style={{ padding: '14px 16px' }}>
                                     <div style={{ display: 'flex', gap: 8 }}>
                                         <Link href={route('projetos.show', p.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#334155', color: '#94a3b8', fontSize: 12, textDecoration: 'none' }}>Ver / Editar</Link>
-                                        <button onClick={() => handleDelete(p.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}>Excluir</button>
+                                        {hasPermission('Deletar Projetos') && (
+                                            <button onClick={() => handleDelete(p.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}>Excluir</button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

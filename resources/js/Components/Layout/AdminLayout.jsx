@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, usePage, router as Inertia } from '@inertiajs/react';
+import usePermission from '../../Hooks/usePermission';
 import { 
     LayoutDashboard, 
     Newspaper, 
@@ -21,21 +22,22 @@ import {
 export default function AdminLayout({ children, title }) {
     const { auth, flash } = usePage().props;
     const user = auth?.user;
+    const { hasPermission } = usePermission();
 
     const menuItems = [
         { label: 'Painel', routeName: 'dashboard', icon: LayoutDashboard },
-        { label: 'Relatórios de Gestão', routeName: 'relatorio_de_gestao.index', icon: FileText },
-        { label: 'Notícias', routeName: 'noticias.index', icon: Newspaper },
-        { label: 'Pessoas', routeName: 'pessoas.index', icon: Users },
-        { label: 'Unidades', routeName: 'unidades.index', icon: Building2 },
-        { label: 'Lideranças', routeName: 'liderancas.index', icon: UserCheck },
+        { label: 'Relatórios de Gestão', routeName: 'relatorio_de_gestao.index', icon: FileText, permission: 'Ver e Listar Relatórios de Gestão' },
+        { label: 'Notícias', routeName: 'noticias.index', icon: Newspaper, permission: 'Ver e Listar Notícias' },
+        { label: 'Pessoas', routeName: 'pessoas.index', icon: Users, permission: 'Ver e Listar Pessoas' },
+        { label: 'Unidades', routeName: 'unidades.index', icon: Building2, permission: 'Ver e Listar Unidades' },
+        { label: 'Lideranças', routeName: 'liderancas.index', icon: UserCheck, permission: 'Ver e Listar Liderança' },
         { label: 'Arquivos', routeName: 'arquivos.index', icon: FolderOpen },
-        { label: 'Banners', routeName: 'banners.index', icon: Image },
-        { label: 'FAQ', routeName: 'faqs.index', icon: HelpCircle },
-        { label: 'Galeria', routeName: 'galeria_imagens.index', icon: Image },
-        { label: 'Notificações', routeName: 'notificacoes.index', icon: Bell },
-        { label: 'Atalhos Web', routeName: 'web_atalhos.index', icon: ExternalLink },
-        { label: 'Usuários', routeName: 'users.index', icon: Settings },
+        { label: 'Banners', routeName: 'banners.index', icon: Image, permission: 'Ver e Listar Banners' },
+        { label: 'FAQ', routeName: 'faqs.index', icon: HelpCircle, permission: 'Ver e Listar FAQ' },
+        { label: 'Galeria', routeName: 'galeria_imagens.index', icon: Image, permission: 'Ver e Listar Galeria' },
+        { label: 'Notificações', routeName: 'notificacoes.index', icon: Bell, permission: 'Ver e Listar Notificações' },
+        { label: 'Atalhos Web', routeName: 'web_atalhos.index', icon: ExternalLink, permission: 'Ver e Listar Atalhos Web' },
+        { label: 'Usuários', routeName: 'users.index', icon: Settings, permission: 'Ver e Listar Usuários' },
     ];
 
     const isRouteActive = (routeName) => {
@@ -68,7 +70,7 @@ export default function AdminLayout({ children, title }) {
 
                 {/* Navigation Links */}
                 <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-                    {menuItems.map((item, idx) => {
+                    {menuItems.filter(item => !item.permission || hasPermission(item.permission)).map((item, idx) => {
                         const Icon = item.icon;
                         const active = isRouteActive(item.routeName);
                         return (

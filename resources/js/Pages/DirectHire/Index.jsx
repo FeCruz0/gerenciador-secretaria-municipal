@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import AdminLayout from '../../Components/Layout/AdminLayout';
+import usePermission from '../../Hooks/usePermission';
 
 export default function DirectHireIndex({ direct_hires }) {
     const [search, setSearch] = useState('');
+    const { hasPermission } = usePermission();
 
     const filtered = direct_hires.filter(dh =>
         dh.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -33,7 +35,9 @@ export default function DirectHireIndex({ direct_hires }) {
                     <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>Contratações Diretas</h1>
                     <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros</p>
                 </div>
-                <Link href={route('contratacoes_diretas.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Nova Contratação</Link>
+                {hasPermission('Criar Contratações Diretas') && (
+                    <Link href={route('contratacoes_diretas.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Nova Contratação</Link>
+                )}
             </div>
 
             <div style={{ marginBottom: 16 }}>
@@ -72,7 +76,9 @@ export default function DirectHireIndex({ direct_hires }) {
                                 <td style={{ padding: '14px 16px' }}>
                                     <div style={{ display: 'flex', gap: 8 }}>
                                         <Link href={route('contratacoes_diretas.show', dh.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#334155', color: '#94a3b8', fontSize: 12, textDecoration: 'none' }}>Ver</Link>
-                                        <button onClick={() => handleDelete(dh.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}>Excluir</button>
+                                        {hasPermission('Editar Contratações Diretas') && (
+                                            <button onClick={() => handleDelete(dh.id)} style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}>Excluir</button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

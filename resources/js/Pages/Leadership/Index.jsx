@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 import { Inertia } from '@inertiajs/inertia';
 import AdminLayout from '../../Components/Layout/AdminLayout';
+import usePermission from '../../Hooks/usePermission';
 
 export default function LeadershipIndex({ leaderships }) {
     const [search, setSearch] = useState('');
+    const { hasPermission } = usePermission();
     
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -66,12 +68,13 @@ export default function LeadershipIndex({ leaderships }) {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: hasPermission('Criar Liderança') ? '1fr 2fr' : '1fr', gap: 24 }}>
                 {/* Cadastrar Nova Liderança */}
-                <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155', height: 'fit-content' }}>
-                    <h3 style={{ color: '#f1f5f9', fontSize: 16, marginTop: 0, marginBottom: 20 }}>Nova Liderança</h3>
-                    
-                    <form onSubmit={handleSubmit}>
+                {hasPermission('Criar Liderança') && (
+                    <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155', height: 'fit-content' }}>
+                        <h3 style={{ color: '#f1f5f9', fontSize: 16, marginTop: 0, marginBottom: 20 }}>Nova Liderança</h3>
+                        
+                        <form onSubmit={handleSubmit}>
                         <div style={groupStyle}>
                             <label style={labelStyle}>Nome *</label>
                             <input 
@@ -159,8 +162,9 @@ export default function LeadershipIndex({ leaderships }) {
                         >
                             {processing ? 'Salvando...' : 'Salvar Liderança'}
                         </button>
-                    </form>
-                </div>
+                        </form>
+                    </div>
+                )}
 
                 {/* Listagem de Lideranças */}
                 <div style={{ background: '#1e293b', borderRadius: 12, padding: 24, border: '1px solid #334155' }}>
@@ -213,12 +217,14 @@ export default function LeadershipIndex({ leaderships }) {
                                                 >
                                                     Editar
                                                 </Link>
-                                                <button 
-                                                    onClick={() => handleDelete(l.id)} 
-                                                    style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}
-                                                >
-                                                    Excluir
-                                                </button>
+                                                {hasPermission('Deletar Liderança') && (
+                                                    <button 
+                                                        onClick={() => handleDelete(l.id)} 
+                                                        style={{ padding: '5px 12px', borderRadius: 6, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 12 }}
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
