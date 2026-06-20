@@ -1,0 +1,1 @@
+import{j as i}from"./app-CjZJv96o.js";function r({users:n}){return i.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[i.jsx("h1",{children:"Usuários"}),i.jsx("ul",{children:n.map(s=>i.jsxs("li",{children:[s.name," (",s.email,")"]},s.id))})]})}export{r as default};

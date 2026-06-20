@@ -1,0 +1,1 @@
+import{j as r}from"./app-CjZJv96o.js";function l({ombudsman:e,unit:i}){return r.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[r.jsxs("h1",{children:["Manifestação #",e==null?void 0:e.id]}),r.jsxs("p",{children:["Unidade: ",i==null?void 0:i.name]}),r.jsx("p",{children:e==null?void 0:e.description})]})}export{l as default};

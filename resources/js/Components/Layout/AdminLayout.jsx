@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link, usePage } from '@inertiajs/inertia-react';
-import { Inertia } from '@inertiajs/inertia';
+import { Link, usePage, router as Inertia } from '@inertiajs/react';
 import { 
     LayoutDashboard, 
     Newspaper, 

@@ -35,8 +35,8 @@ class ShortcutWebUpdateService
                         'status' => $request['status']
                     ]
                 );
-                if($shortcutWeb_id != 0){
-                    Storage::disk('shortcutweb')->delete($old_ShortcutWeb->image);
+                if($shortcutWeb_id != 0 && !empty($old_ShortcutWeb->img_url)){
+                    Storage::disk('shortcutweb')->delete($old_ShortcutWeb->img_url);
                 }
             }
             else{

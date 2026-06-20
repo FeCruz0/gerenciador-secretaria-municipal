@@ -55,11 +55,11 @@ data-asset-path="{{ asset('/')}}">
   <!-- End: Content-->
 
   @if($configData['blankPage'] == false && isset($configData['blankPage']))
-  <!-- BEGIN: Customizer-->
-  <!-- @include('content/pages/customizer') -->
-  <!-- End: Customizer-->
-  <!-- Buynow Button-->
- <!--  @include('content/pages/buy-now') -->
+  {{-- BEGIN: Customizer--}}
+  {{-- @include('content/pages/customizer') --}}
+  {{-- End: Customizer--}}
+  {{-- Buynow Button--}}
+  {{-- @include('content/pages/buy-now') --}}
   @endif
 
   <div class="sidenav-overlay"></div>

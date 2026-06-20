@@ -1,1 +1,0 @@
-import{j as a}from"./app-b2b9ffa3.js";function i({unit:s,occupations:e,units:r,departaments:t}){return a.jsxs("div",{style:{padding:"2rem",fontFamily:"sans-serif"},children:[a.jsx("h1",{children:"Cadastrar Nova Pessoa"}),a.jsxs("p",{children:["Unidade Administrativa: ",s==null?void 0:s.name]})]})}export{i as default};
