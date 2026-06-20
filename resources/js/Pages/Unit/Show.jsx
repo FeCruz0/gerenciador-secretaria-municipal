@@ -204,7 +204,7 @@ export default function UnitShow({ unit_selected, organizations, social_media })
                         </div>
 
                         <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-                            <button type="submit" disabled={unitProcessing} className="btn-primary" style={{ flex: 1, opacity: unitProcessing ? 0.6 : 1 }}>
+                            <button type="submit" disabled={unitProcessing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ flex: 1, opacity: unitProcessing ? 0.6 : 1 }}>
                                 {unitProcessing ? 'Salvando...' : 'Editar Unidade'}
                             </button>
                             <button type="button" onClick={handleDeleteUnit} style={{ padding: '10px 18px', borderRadius: 8, background: '#7f1d1d20', color: '#f87171', border: 'none', cursor: 'pointer', fontSize: 14 }}>
@@ -237,7 +237,7 @@ export default function UnitShow({ unit_selected, organizations, social_media })
                                 {mediaErrors.url && <p style={errorStyle}>{mediaErrors.url}</p>}
                             </div>
 
-                            <button type="submit" disabled={mediaProcessing} className="btn-primary" style={{ width: '100%', opacity: mediaProcessing ? 0.6 : 1 }}>
+                            <button type="submit" disabled={mediaProcessing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ width: '100%', opacity: mediaProcessing ? 0.6 : 1 }}>
                                 {mediaProcessing ? 'Salvando...' : 'Vincular Mídia'}
                             </button>
                         </form>
@@ -326,7 +326,7 @@ export default function UnitShow({ unit_selected, organizations, social_media })
                                 {aboutErrors.image && <p style={errorStyle}>{aboutErrors.image}</p>}
                             </div>
 
-                            <button type="submit" disabled={aboutProcessing} className="btn-primary" style={{ width: '100%', opacity: aboutProcessing ? 0.6 : 1 }}>
+                            <button type="submit" disabled={aboutProcessing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ width: '100%', opacity: aboutProcessing ? 0.6 : 1 }}>
                                 {aboutProcessing ? 'Salvando...' : 'Salvar Dados Sobre'}
                             </button>
                         </form>

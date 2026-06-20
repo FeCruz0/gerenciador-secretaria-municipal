@@ -32,7 +32,7 @@ export default function BiddingIndex({ biddings }) {
                     <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>Licitações</h1>
                     <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros</p>
                 </div>
-                <Link href={route('licitacoes.create')} className="btn-primary">+ Nova Licitação</Link>
+                <Link href={route('licitacoes.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Nova Licitação</Link>
             </div>
 
             <div style={{ marginBottom: 16 }}>
@@ -58,7 +58,7 @@ export default function BiddingIndex({ biddings }) {
                         {filtered.length === 0 ? (
                             <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Nenhuma licitação encontrada</td></tr>
                         ) : filtered.map(b => (
-                            <tr key={b.id} style={{ borderBottom: '1px solid #1e293b' }} className="table-row-hover">
+                            <tr key={b.id} style={{ borderBottom: '1px solid #1e293b' }} className="hover:bg-slate-800/50 transition-colors">
                                 <td style={{ padding: '14px 16px', color: '#94a3b8', fontFamily: 'monospace' }}>{b.number || '—'}</td>
                                 <td style={{ padding: '14px 16px', color: '#f1f5f9', fontWeight: 500, maxWidth: 260 }}>
                                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.title}</div>

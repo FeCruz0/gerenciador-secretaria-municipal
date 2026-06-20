@@ -75,7 +75,7 @@ export default function Index({ management_reports = [], unit }) {
                     <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros</p>
                 </div>
                 <div>
-                    <Link href={route('relatorio_de_gestao.create')} className="btn-primary">+ Novo Relatório</Link>
+                    <Link href={route('relatorio_de_gestao.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Novo Relatório</Link>
                 </div>
             </div>
 

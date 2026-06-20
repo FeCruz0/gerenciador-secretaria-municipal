@@ -36,7 +36,7 @@ export default function ExpenseIndex({ expenses }) {
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
                     <Link href={route('relatorios.despesas')} style={{ padding: '8px 16px', borderRadius: 8, background: '#334155', color: '#94a3b8', textDecoration: 'none', fontSize: 14 }}>📊 Relatório</Link>
-                    <Link href={route('despesas.create')} className="btn-primary">+ Nova Despesa</Link>
+                    <Link href={route('despesas.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">+ Nova Despesa</Link>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@ export default function ExpenseIndex({ expenses }) {
                         {filtered.length === 0 ? (
                             <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Nenhuma despesa encontrada</td></tr>
                         ) : filtered.map(e => (
-                            <tr key={e.id} style={{ borderBottom: '1px solid #1e293b' }} className="table-row-hover">
+                            <tr key={e.id} style={{ borderBottom: '1px solid #1e293b' }} className="hover:bg-slate-800/50 transition-colors">
                                 <td style={{ padding: '14px 16px', color: '#f1f5f9', fontWeight: 500, maxWidth: 240 }}>
                                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.title}</div>
                                 </td>

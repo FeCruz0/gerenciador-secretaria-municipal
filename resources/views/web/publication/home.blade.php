@@ -4,7 +4,7 @@
     <section id="publications">
         <div class="container">
             <div class="section-title">
-                <h2>Publicações SEMAS</h2>
+                <h2>Publicações</h2>
             </div>
             <div class="container">
                 <h5 class="card-title">Atividades</h5>

@@ -158,7 +158,7 @@ export default function LeadershipShow({ leadership, social_media }) {
                             <button 
                                 type="submit" 
                                 disabled={editProcessing} 
-                                className="btn-primary" 
+                                className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" 
                                 style={{ flex: 1, opacity: editProcessing ? 0.6 : 1 }}
                             >
                                 {editProcessing ? 'Salvando...' : 'Editar'}
@@ -213,7 +213,7 @@ export default function LeadershipShow({ leadership, social_media }) {
                             <button 
                                 type="submit" 
                                 disabled={mediaProcessing} 
-                                className="btn-primary" 
+                                className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" 
                                 style={{ width: '100%', opacity: mediaProcessing ? 0.6 : 1 }}
                             >
                                 {mediaProcessing ? 'Salvando...' : 'Salvar Mídia'}

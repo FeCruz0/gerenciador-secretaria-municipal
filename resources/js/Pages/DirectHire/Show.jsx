@@ -216,7 +216,7 @@ export default function DirectHireShow({ direct_hire, modalities, situations, po
 
                         <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 16 }}>
                             <button type="button" onClick={handleDeleteDh} style={{ padding: '10px 24px', borderRadius: 8, background: '#7f1d1d20', color: '#f87171', border: '1px solid #7f1d1d', cursor: 'pointer', fontSize: 14 }}>Excluir</button>
-                            <button type="submit" disabled={dhProcessing} className="btn-primary" style={{ opacity: dhProcessing ? 0.6 : 1 }}>
+                            <button type="submit" disabled={dhProcessing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ opacity: dhProcessing ? 0.6 : 1 }}>
                                 {dhProcessing ? 'Salvando...' : 'Salvar Alterações'}
                             </button>
                         </div>
@@ -233,7 +233,7 @@ export default function DirectHireShow({ direct_hire, modalities, situations, po
                                 <option value="">Selecione um Vencedor...</option>
                                 {possible_winners.map(pw => <option key={pw.id} value={pw.id}>{pw.full_name}</option>)}
                             </select>
-                            <button type="submit" className="btn-primary" style={{ whiteSpace: 'nowrap' }}>+ Adicionar</button>
+                            <button type="submit" className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ whiteSpace: 'nowrap' }}>+ Adicionar</button>
                         </form>
 
                         <div style={{ maxHeight: 200, overflowY: 'auto' }}>
@@ -280,7 +280,7 @@ export default function DirectHireShow({ direct_hire, modalities, situations, po
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <button type="button" onClick={handleAddFileInput} style={{ background: '#334155', color: '#94a3b8', border: 'none', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12 }}>+ Outro Arquivo</button>
-                                <button type="submit" className="btn-primary">Fazer Upload</button>
+                                <button type="submit" className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">Fazer Upload</button>
                             </div>
                         </form>
 
@@ -325,7 +325,7 @@ export default function DirectHireShow({ direct_hire, modalities, situations, po
                             {direct_hire.winners?.map(w => <option key={w.people_id} value={w.people_id}>{w.person?.full_name}</option>)}
                         </select>
                     </div>
-                    <button type="submit" disabled={itemProcessing} className="btn-primary" style={{ height: 40, opacity: itemProcessing ? 0.6 : 1 }}>
+                    <button type="submit" disabled={itemProcessing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ height: 40, opacity: itemProcessing ? 0.6 : 1 }}>
                         {itemProcessing ? '...' : '+ Adicionar Item'}
                     </button>
                 </form>

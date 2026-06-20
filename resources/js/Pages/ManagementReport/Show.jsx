@@ -172,7 +172,7 @@ export default function Show({ management_report, management_report_types = [], 
                         <button 
                             type="submit" 
                             disabled={reportProcessing} 
-                            className="btn-primary" 
+                            className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" 
                             style={{ opacity: reportProcessing ? 0.6 : 1 }}
                         >
                             {reportProcessing ? 'Salvando...' : 'Salvar Alterações'}
@@ -225,7 +225,7 @@ export default function Show({ management_report, management_report_types = [], 
                         <button 
                             type="submit" 
                             disabled={fileProcessing} 
-                            className="btn-primary" 
+                            className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" 
                             style={{ width: '100%', padding: '12px 14px', fontSize: 15, opacity: fileProcessing ? 0.6 : 1 }}
                         >
                             {fileProcessing ? 'Enviando...' : 'Salvar Arquivo'}
@@ -251,7 +251,7 @@ export default function Show({ management_report, management_report_types = [], 
                                         href={route('arquivos.show', management_report.file.id)} 
                                         target="_blank" 
                                         rel="noopener noreferrer" 
-                                        className="btn-primary" 
+                                        className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" 
                                         style={{ 
                                             padding: '8px 16px', 
                                             fontSize: 13, 

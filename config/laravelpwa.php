@@ -3,8 +3,8 @@
 return [
     'name' => 'LaravelPWA',
     'manifest' => [
-        'name' => env('SEMAS', 'Secretaria do Ambiente'),
-        'short_name' => 'SEMAS',
+        'name' => env('GESEM', 'Secretaria do Ambiente'),
+        'short_name' => 'GESEM',
         'start_url' => '/',
         'background_color' => '#ffffff',
         'theme_color' => '#000000',

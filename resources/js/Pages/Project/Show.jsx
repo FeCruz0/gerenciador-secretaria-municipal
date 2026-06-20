@@ -136,7 +136,7 @@ export default function ProjectShow({ project, project_files, categories }) {
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16 }}>
                                 <button type="button" onClick={handleDelete} style={{ padding: '10px 24px', borderRadius: 8, background: '#7f1d1d20', color: '#f87171', border: '1px solid #7f1d1d', cursor: 'pointer', fontSize: 14 }}>Excluir</button>
-                                <button type="submit" disabled={processing} className="btn-primary" style={{ opacity: processing ? 0.6 : 1 }}>
+                                <button type="submit" disabled={processing} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ opacity: processing ? 0.6 : 1 }}>
                                     {processing ? 'Salvando...' : 'Salvar Alterações'}
                                 </button>
                             </div>
@@ -182,7 +182,7 @@ export default function ProjectShow({ project, project_files, categories }) {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <button type="button" onClick={handleAddFileInput} style={{ background: '#334155', color: '#94a3b8', border: 'none', borderRadius: 6, padding: '6px 12px', cursor: 'pointer', fontSize: 12 }}>+ Novo Arquivo</button>
-                                <button type="submit" className="btn-primary">Fazer Upload</button>
+                                <button type="submit" className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">Fazer Upload</button>
                             </div>
                         </form>
 

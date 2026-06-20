@@ -67,7 +67,7 @@ export default function RevenueReportIndex({ revenues, types }) {
                             <input type="date" name="date_end" style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #334155', background: '#0f172a', color: '#f1f5f9', boxSizing: 'border-box' }} />
                         </div>
                     </div>
-                    <button type="submit" className="btn-primary" style={{ padding: '10px 28px' }}>
+                    <button type="submit" className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none" style={{ padding: '10px 28px' }}>
                         📄 Gerar PDF
                     </button>
                 </form>

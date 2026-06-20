@@ -27,8 +27,8 @@ class ManagementReportMigrationTest extends TestCase
         // Configuração obrigatória de Organização e Unidade
         $org = Organization::create(['title' => 'Org', 'active' => 1]);
         Unit::create([
-            'name'            => 'Secretaria de Meio Ambiente',
-            'sigla'           => 'SEMAS',
+            'name'            => 'Secretaria de Mncicipal',
+            'sigla'           => 'SECMUN',
             'phone'           => '12345678',
             'web'             => true,
             'city_id'         => 1,

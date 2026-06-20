@@ -46,7 +46,7 @@ export default function LegislationIndex({ legislations, categories, situations 
                     <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9', margin: 0 }}>Legislações</h1>
                     <p style={{ color: '#64748b', margin: '4px 0 0' }}>{filtered.length} registros encontrados</p>
                 </div>
-                <Link href={route('legislacoes.create')} className="btn-primary">
+                <Link href={route('legislacoes.create')} className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 font-medium shadow-md shadow-indigo-600/20 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none">
                     + Nova Legislação
                 </Link>
             </div>
@@ -92,7 +92,7 @@ export default function LegislationIndex({ legislations, categories, situations 
                         {filtered.length === 0 ? (
                             <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Nenhum resultado encontrado</td></tr>
                         ) : filtered.map(l => (
-                            <tr key={l.id} style={{ borderBottom: '1px solid #1e293b' }} className="table-row-hover">
+                            <tr key={l.id} style={{ borderBottom: '1px solid #1e293b' }} className="hover:bg-slate-800/50 transition-colors">
                                 <td style={{ padding: '14px 16px', color: '#94a3b8', fontFamily: 'monospace' }}>{l.number || '—'}</td>
                                 <td style={{ padding: '14px 16px', color: '#f1f5f9', fontWeight: 500, maxWidth: 280 }}>
                                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.title}</div>
