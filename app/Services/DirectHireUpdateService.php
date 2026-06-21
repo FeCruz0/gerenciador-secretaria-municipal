@@ -19,16 +19,15 @@ class DirectHireUpdateService
     {
         try {
             DB::beginTransaction();
-            $strings_1 = ['.', 'R$ ', ','];
-            $strings_2 = ['', '', '.'];
-            $replacements = array(
-                "value_min" => floatval(str_replace($strings_1, $strings_2, $request['value_min'])),
-                "value_max" => floatval(str_replace($strings_1, $strings_2, $request['value_max']))
-            );
-    
-            $changed = array_replace($request, $replacements);
             
-            $this->directHireService->update($changed, $direct_hire_id);
+            if (array_key_exists('value_min', $request)) {
+                $request['value_min'] = $this->parseCurrency($request['value_min']);
+            }
+            if (array_key_exists('value_max', $request)) {
+                $request['value_max'] = $this->parseCurrency($request['value_max']);
+            }
+    
+            $this->directHireService->update($request, $direct_hire_id);
 
             DB::commit();
         } catch (Exception $exception) {
@@ -37,5 +36,18 @@ class DirectHireUpdateService
             dd($exception);
             throw new Exception($exception);
         }
+    }
+
+    private function parseCurrency($value)
+    {
+        if (is_null($value) || $value === '') {
+            return null;
+        }
+        if (is_numeric($value)) {
+            return floatval($value);
+        }
+        $strings_1 = ['.', 'R$ ', ','];
+        $strings_2 = ['', '', '.'];
+        return floatval(str_replace($strings_1, $strings_2, $value));
     }
 }

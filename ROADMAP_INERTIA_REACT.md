@@ -198,6 +198,8 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 - [x] Remover view Blade legada obsoleta `not-authorized.blade.php`
 - [x] Validar a ausência de referências remanescentes no código
 - [x] Executar build de produção do Vite e validar suíte do PHPUnit
+- [x] Corrigir quebra de layout no Vite dev server refatorando o `postcss.config.js` para ES Modules
+
 
 ---
 

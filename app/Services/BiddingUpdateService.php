@@ -20,14 +20,12 @@ class BiddingUpdateService
     {
         try {
             DB::beginTransaction();
-            $strings_1 = ['.', 'R$ ', ','];
-            $strings_2 = ['', '', '.'];
-            $replacements = array(
-                "value_max" => floatval(str_replace($strings_1, $strings_2, $request['value_max'])),
-            );
+            
+            if (array_key_exists('value_max', $request)) {
+                $request['value_max'] = $this->parseCurrency($request['value_max']);
+            }
     
-            $changed = array_replace($request, $replacements);
-            $this->biddingService->update($changed, $bidding_id);
+            $this->biddingService->update($request, $bidding_id);
 
             DB::commit();
         } catch (Exception $exception) {
@@ -35,5 +33,18 @@ class BiddingUpdateService
             DB::rollBack();
             throw new Exception($exception);
         }
+    }
+
+    private function parseCurrency($value)
+    {
+        if (is_null($value) || $value === '') {
+            return null;
+        }
+        if (is_numeric($value)) {
+            return floatval($value);
+        }
+        $strings_1 = ['.', 'R$ ', ','];
+        $strings_2 = ['', '', '.'];
+        return floatval(str_replace($strings_1, $strings_2, $value));
     }
 }
