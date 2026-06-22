@@ -117,4 +117,10 @@ enum Permission: string
     case CREATE_USERS = 'Criar Usuários';
     case EDIT_USERS = 'Editar Usuários';
     case DELETE_USERS = 'Deletar Usuários';
+
+    // Módulos da Home
+    case MANAGE_HOME_MODULES = 'Gerenciar Módulos da Home';
+
+    // Gerenciar Entidades (Órgãos/Subsecretarias)
+    case MANAGE_ENTITIES = 'Gerenciar Entidades';
 }

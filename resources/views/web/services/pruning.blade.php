@@ -59,7 +59,7 @@
 
                 <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <img src=../../../images/semas-poda-manutencao-logo.png>
+                        <img src=../../../images/gesem-poda-manutencao-logo.png>
                         <p
                             class="nav-link">
                             <strong>Poda de Manutenção</strong></p>
@@ -69,7 +69,7 @@
                         </div>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <img src=../../../images/semas-poda-limpeza-logo.png>
+                        <img src=../../../images/gesem-poda-limpeza-logo.png>
                         <p
                             class="nav-link">
                             <strong>Poda de Limpeza</strong></p>
@@ -78,7 +78,7 @@
                         </div>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <img src=../../../images/semas-poda-emergencia-logo.png>
+                        <img src=../../../images/gesem-poda-emergencia-logo.png>
                         <p
                             class="nav-link">
                             <strong>Poda de Emergência</strong></p>
@@ -89,7 +89,7 @@
                 </ul>
                 <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <img src=../../../images/semas-poda-adequacao-logo.png>
+                        <img src=../../../images/gesem-poda-adequacao-logo.png>
                         <p
                             class="nav-link">
                             <strong>Poda de Adequação</strong></p>
@@ -99,7 +99,7 @@
                         </div>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <img src=../../../images/semas-poda-supressao-logo.png>
+                        <img src=../../../images/gesem-poda-supressao-logo.png>
                         <p
                             class="nav-link">
                             <strong>Supressão</strong></p>
@@ -170,7 +170,7 @@
                     role="tabpanel"
                     aria-labelledby="ex3-tab-1"
                     >
-                    <p class="card-text">O requerente precisa abrir uma solicitação na SEMAS, com nome
+                    <p class="card-text">O requerente precisa abrir uma solicitação na GESEM, com nome
                         completo do requerente, endereço completo, número do documento,
                         número do telefone, ponto de referência, além de informar o motivo
                         para o qual está pedindo a referida poda. O tempo estimado é de
@@ -184,7 +184,7 @@
                     role="tabpanel"
                     aria-labelledby="ex3-tab-2"
                     >
-                    <p class="card-text">O requerente precisa abrir uma solicitação na SEMAS, com nome
+                    <p class="card-text">O requerente precisa abrir uma solicitação na GESEM, com nome
                         completo do requerente, endereço completo, número do documento,
                         número do telefone, ponto de referência, além de informar o
                         motivo para o qual está pedindo a referida supressão. Após a

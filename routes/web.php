@@ -41,6 +41,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OccupationController;
 use App\Http\Controllers\OmbudsmanController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\OrganController;
 use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProjectCategoryController;
@@ -54,6 +55,7 @@ use App\Http\Controllers\EnviromentalLicensingController;
 use App\Http\Controllers\PostLicenseController;
 
 use App\Http\Controllers\RevenueController;
+use App\Http\Controllers\HomeModuleController;
 use App\Http\Controllers\RevenueTypeController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeAccessController;
@@ -84,6 +86,10 @@ use App\Http\Controllers\ShortcutWebController;
 | Main Routes
 |--------------------------------------------------------------------------
 */
+
+
+
+$registerRoutes = function () {
 //Ouvidoria - Ombudsman
 Route::get('/ouvidoria_web', 'App\Http\Controllers\OmbudsmanController@web_ouvidoria')->name('web_ouvidoria');
 Route::post('/ombudsman_store', 'App\Http\Controllers\OmbudsmanController@ombudsman_store')->name('ombudsman_store');
@@ -125,6 +131,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/unidades', UnitController::class);
     Route::resource('/departamentos', DepartamentController::class);
     Route::resource('/organizacoes', OrganizationController::class);
+    Route::resource('/orgaos', OrganController::class);
     Route::resource('/ocupacoes', OccupationController::class);
     //Main - Arquivos
     Route::resource('/arquivos', FileController::class);
@@ -188,6 +195,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/banners', BannerController::class);
     //Main - Shortcutweb
     Route::resource('/web_atalhos', ShortcutWebController::class);
+    //Main - Home Modules
+    Route::resource('/home_modules', HomeModuleController::class)->only(['index', 'update']);
+    Route::post('/home_modules/order', [HomeModuleController::class, 'updateOrder'])->name('home_modules.update_order');
     //Main - Licenciamento Ambiental
     Route::resource('/licenciamento_ambiental', EnviromentalLicensingController::class);
     //Main - Pós Licença
@@ -405,7 +415,47 @@ Route::prefix('utilidades')->group(function(){
 /***********************/
 
 
-require __DIR__.'/auth.php';
-require __DIR__.'/dev.php';
-require __DIR__.'/filters.php';
-require __DIR__.'/reports.php';
+    require __DIR__.'/dev.php';
+    require __DIR__.'/filters.php';
+    require __DIR__.'/reports.php';
+
+};
+
+$reservedKeywords = [
+    'dashboard', 'admin', 'login', 'register', 'forgot-password', 'reset-password', 'verify-email', 'logout', 'ouvidoria', 'noticias_web', 'projeto_web', 'unid_conservacao_web', 'relatorio_de_gestao_web', 'despesas_index', 'receitas_index', 'legislacoes_index', 'contratacao_direta_index', 'licitacao_index', 'contratos_index', 'servicos', 'meuambiente', 'publicacao', 'transparencia', 'legislacao', 'faq', 'utilidades', 'institucional', 'licenciamento_ambiental_web',
+    'unidades', 'departamentos', 'users', 'permissions', 'roles', 'pessoas', 'telefones', 'documentos', 'emails', 'enderecos', 'organizacoes', 'orgaos', 'ocupacoes', 'arquivos', 'capas', 'noticias', 'noticia_categorias', 'noticia_tags', 'notificacoes', 'ouvidoria_manifestacoes', 'ouvidoria_acessos', 'ouvidoria_requisicoes', 'despesa_tipos', 'despesas', 'receita_tipos', 'receitas', 'legislacoes', 'legislacao_assuntos', 'legislacao_categorias', 'legislacao_situacoes', 'legislacao_vinculos', 'licitacoes', 'licitacao_modalidades', 'licitacao_items', 'licitacao_vencedores', 'licitacao_contratos', 'licitacao_contrato_tipos', 'contratacoes_diretas', 'contratacao_direta_modalidades', 'contratacao_direta_vencedores', 'contratacao_direta_itens', 'projetos', 'projeto_categorias', 'projeto_medias', 'unid_conservacao', 'unid_conservacao_abrangencia', 'relatorio_de_gestao', 'relatorio_de_gestao_tipo', 'faqs', 'galeria_imagens', 'liderancas', 'sobres', 'banners', 'web_atalhos', 'home_modulos', 'licenciamento_ambiental', 'pos_licenca', 'web', 'savenewscontent', 'store_people', 'legislacao_vinculo', 'address', 'notification', 'departament', 'winner_add_itens', 'winner_remove_itens', 'winner_itens', 'entry_index', 'report_ombudsman_index', 'report_ombudsman_pdf', 'entry_reports', 'entry_reports_index', 'file_web', 'unidade_social_media_add', 'unidade_social_media_remove', 'unidade_social_media_update', 'unidade_social_media_delete', 'ombudsman_store', 'ouvidoria_web', 'type_access_select', 'sanctum', 'livewire', '_debugbar', 'assets', 'css', 'js', 'img', 'fonts', 'favicon'
+];
+
+$organRegex = '(?!' . implode('$|', $reservedKeywords) . '$)[a-zA-Z0-9_-]+';
+
+if (app()->environment('testing')) {
+    // Grupo 1: Com prefixo {organ} (Registrado primeiro nos testes)
+    Route::prefix('{organ}')->where(['organ' => $organRegex])->middleware(['organ.context'])->group(function () use ($registerRoutes) {
+        $registerRoutes();
+        Route::name('organ.')->group(function () {
+            require __DIR__.'/auth.php';
+        });
+    });
+
+    // Grupo 2: Sem prefixo (Registrado por último nos testes para prioridade no nameList)
+    Route::middleware(['organ.context'])->group(function () use ($registerRoutes) {
+        $registerRoutes();
+        require __DIR__.'/auth.php';
+    });
+} else {
+    // Grupo 2: Sem prefixo (Registrado primeiro em prod)
+    Route::middleware(['organ.context'])->group(function () use ($registerRoutes) {
+        $registerRoutes();
+        require __DIR__.'/auth.php';
+    });
+
+    // Grupo 1: Com prefixo {organ} (Registrado por último em prod para prioridade no nameList)
+    Route::prefix('{organ}')->where(['organ' => $organRegex])->middleware(['organ.context'])->group(function () use ($registerRoutes) {
+        $registerRoutes();
+        Route::name('organ.')->group(function () {
+            require __DIR__.'/auth.php';
+        });
+    });
+}
+
+Route::get('/', [HomeWebController::class, 'index'])->middleware(['organ.context'])->name('root_home');

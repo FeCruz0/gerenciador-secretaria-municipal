@@ -128,7 +128,7 @@
                 fiscalização ambiental leia atentamente as informações 
                 abaixo:</p>
               <div>
-                <p>DENÚNCIAS E FISCALIZAÇÕES DE COMPETÊNCIA DA SEMAS</p>
+                <p>DENÚNCIAS E FISCALIZAÇÕES DE COMPETÊNCIA DA GESEM</p>
                 <div style="width:auto;">
                     <img src="../../../assets-web/img/content/denuncias-ambientais-1.png">
                 </div>
@@ -139,7 +139,7 @@
               <p>Para entrar em contato com o setor de Fiscalização da  
                 Secretaria do Ambiente e Saneamento de Arraial do Cabo, 
                 preencha o formulário ou envie um e-mail para
-                <a href="mailto:fiscalizacaosemas@arraial.rj.gov.br">nosso contato</a>.</p>
+                <a href="mailto:fiscalizacaogesem@arraial.rj.gov.br">nosso contato</a>.</p>
               <p>* Para denúncias de crimes ambientais, 
                 acesse a página da fiscalização ambiental.</p>
               <button class="btn btn-success"><a href="{{ route('web_services.fiscalization') }}">
@@ -182,7 +182,7 @@
                 <p>Para entrar em contato com o setor de Poda  da  
                   Secretaria do Ambiente e Saneamento de Arraial do Cabo, 
                   preencha o formulário ou envie um e-mail para
-                  <a href="mailto:poda.semas@arraial.rj.gov.br">nosso contato</a>.</p>
+                  <a href="mailto:poda.gesem@arraial.rj.gov.br">nosso contato</a>.</p>
               </div>
               <div>
                 <h5 class="card-title">Atenção</h5>

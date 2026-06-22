@@ -13,6 +13,9 @@ export default function usePermission() {
      * @returns {boolean}
      */
     const hasPermission = (permission) => {
+        if (!Array.isArray(permissions)) {
+            return false;
+        }
         return permissions.includes(permission);
     };
 
@@ -22,6 +25,9 @@ export default function usePermission() {
      * @returns {boolean}
      */
     const hasAnyPermission = (perms) => {
+        if (!Array.isArray(permissions) || !Array.isArray(perms)) {
+            return false;
+        }
         return perms.some(p => permissions.includes(p));
     };
 

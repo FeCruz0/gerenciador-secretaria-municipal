@@ -22,13 +22,13 @@
 
     <div class="logo float-start d-none d-xl-block">
     <img class="img-profile"
-      src="{{asset('storage/images/units/' . $unit->logo)}}">
+      src="{{ (isset($unit) && $unit->logo) ? asset('storage/images/units/' . $unit->logo) : asset('assets-web/img/pmac-governo.svg') }}">
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
     </div>
     <div class="logo float-start d-lg-none">
       <img class="img-profile"
-        src="{{asset('storage/images/units/' . $unit->logo)}}">
+        src="{{ (isset($unit) && $unit->logo) ? asset('storage/images/units/' . $unit->logo) : asset('assets-web/img/pmac-governo.svg') }}">
     </div>
 
     <nav class="nav-menu float-end d-none d-lg-block">
@@ -83,7 +83,7 @@
           <a href="">Publicações</a>
           <ul>
             <li class="{{ (request()->is('publicacao/publicacoessemas')) || (request()->is('publicacao/publicacoessemas')) ? 'active' : '' }}">
-              <a href="{{ route('web_publication.home') }}">Publicações SEMAS</a>
+              <a href="{{ route('web_publication.home') }}">Publicações {{ app()->has('active_organ') ? app('active_organ')->sigla : 'Prefeitura Municipal' }}</a>
             </li>
             <li class="{{ (request()->is('publicacao/pesquisas')) || (request()->is('publicacao/pesquisas')) ? 'active' : '' }}">
               <a href="{{ route('web_publication.researchs') }}">Pesquisas</a>

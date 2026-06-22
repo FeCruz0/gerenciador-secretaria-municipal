@@ -27,8 +27,19 @@ class Departament extends Model implements Auditable
         'unit_id',
         'responsible',
         'phone',
-        'email'
+        'email',
+        'organ_id'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ(): BelongsTo
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     public function unit(): BelongsTo
     {

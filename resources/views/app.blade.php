@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title inertia>{{ config('app.name', 'Painel Administrativo') }}</title>
+  <title inertia>{{ app()->has('active_organ') ? app('active_organ')->sigla . ' - Painel' : config('app.name', 'Painel Administrativo') }}</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

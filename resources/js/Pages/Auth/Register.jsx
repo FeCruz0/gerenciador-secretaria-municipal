@@ -22,7 +22,7 @@ export default function Register() {
 
             {/* Logo Absoluta */}
             <div className="absolute top-8 left-8 z-20 flex items-center gap-2">
-                <span className="font-bold text-lg text-slate-100 tracking-tight">SEMAS</span>
+                <span className="font-bold text-lg text-slate-100 tracking-tight">GESEM</span>
             </div>
 
             {/* Coluna Esquerda: Ilustração */}
@@ -37,7 +37,7 @@ export default function Register() {
                     <div className="text-center mt-8 space-y-2">
                         <h3 className="text-xl font-bold text-slate-200">Solicitação de Acesso</h3>
                         <p className="text-slate-400 text-sm max-w-sm">
-                            Crie sua conta para solicitar acesso às ferramentas administrativas do painel SEMAS.
+                            Crie sua conta para solicitar acesso às ferramentas administrativas do painel GESEM.
                         </p>
                     </div>
                 </div>

@@ -26,7 +26,7 @@ export default function Login({ unit }) {
                         alt="logo" 
                     />
                 )}
-                <span className="font-bold text-lg text-slate-100 tracking-tight">{unit?.sigla || 'SEMAS'}</span>
+                <span className="font-bold text-lg text-slate-100 tracking-tight">{unit?.sigla || 'GESEM'}</span>
             </div>
 
             {/* Coluna Esquerda: Ilustração */}

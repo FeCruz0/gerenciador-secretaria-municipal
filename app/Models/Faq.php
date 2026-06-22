@@ -22,8 +22,19 @@ class Faq extends Model implements Auditable
         'departament_id',
         'question',
         'answer',
-        'status'
+        'status',
+        'organ_id'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ()
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     protected $dates = [
         'deleted_at'

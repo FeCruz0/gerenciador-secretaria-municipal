@@ -8,12 +8,13 @@
 
           </div>
           <div class="col-lg-3 col-md-6 footer-info">
-            <img class="img-profile" src="{{ asset('assets-web/img/semas-white-logo.svg')}}" style="width:197px;margin-left:-5px;">
+            <img class="img-profile" src="{{ isset($logoUrl) ? $logoUrl : asset('assets-web/img/pmac-governo.svg') }}" style="width:197px;margin-left:-5px;">
             <p><br>
-              Rua Tókio, Nº 76 - Vila Canaa <br>
-              Arraial do Cabo - RJ, BR<br><br>
-              <strong>Whatsapp:</strong> 22 99758-7289<br>
-              <strong>Email:</strong> gab.ambiente@arraial.rj.gov.br<br>
+              {{ app()->has('active_organ') ? app('active_organ')->sigla : (isset($unit) ? $unit->sigla : 'Prefeitura') }} <br>
+              {{ isset($unit) ? $unit->address : '' }}<br>
+              {{ isset($unit->organization) ? $unit->operation : '' }}<br><br>
+              <strong>Whatsapp:</strong> {{ isset($unit->phone) ? $unit->phone : '' }}<br>
+              <strong>Email:</strong> {{ isset($unit->email) ? $unit->email : '' }}<br>
             </p>
             <div class="social-links mt-3">
               <a href="https://www.facebook.com/" class="facebook"><i class="bx bxl-facebook"></i></a>
@@ -69,7 +70,7 @@
             <h4>Publicação</h4>
             <ul>
               <li><i class="bx bx-chevron-right"></i>
-                <a href="{{ route('web_publication.home') }}">Publicações SEMAS</a></li>
+                <a href="{{ route('web_publication.home') }}">Publicações {{ app()->has('active_organ') ? app('active_organ')->sigla : 'Prefeitura Municipal' }}</a></li>
               <li><i class="bx bx-chevron-right"></i>
                 <a href="{{ route('web_publication.researchs') }}">Pesquisas</a></li>
             </ul>

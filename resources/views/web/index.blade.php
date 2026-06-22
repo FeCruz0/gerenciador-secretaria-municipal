@@ -86,7 +86,7 @@
             <div class="info-box">
               <i class="bx bx-map"></i>
                 <h3>Site</h3>
-              <p><a href="{{route('ombudsman')}}">semas.arraial.rj.gov.br/ouvidoria</a></p>
+              <p><a href="{{route('ombudsman')}}">gesem.arraial.rj.gov.br/ouvidoria</a></p>
             </div>
           </div>
 

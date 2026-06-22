@@ -37,8 +37,19 @@ class User extends Authenticatable implements Auditable
         'email',
         'password',
         'people_id',
-        'profile_photo_path'
+        'profile_photo_path',
+        'organ_id'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ(): BelongsTo
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     /**
      * The attributes that should be hidden for arrays.

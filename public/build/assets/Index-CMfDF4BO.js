@@ -1,1 +1,0 @@
-import{s as e,t}from"./app-BiOdqtwR.js";e();var n=t();function r({users:e}){return(0,n.jsxs)(`div`,{style:{padding:`2rem`,fontFamily:`sans-serif`},children:[(0,n.jsx)(`h1`,{children:`Usuários`}),(0,n.jsx)(`ul`,{children:e.map(e=>(0,n.jsxs)(`li`,{children:[e.name,` (`,e.email,`)`]},e.id))})]})}export{r as default};

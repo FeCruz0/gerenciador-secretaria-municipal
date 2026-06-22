@@ -19,7 +19,7 @@ export default function ConfirmPassword() {
 
             {/* Logo Absoluta */}
             <div className="absolute top-8 left-8 z-20 flex items-center gap-2">
-                <span className="font-bold text-lg text-slate-100 tracking-tight">SEMAS</span>
+                <span className="font-bold text-lg text-slate-100 tracking-tight">GESEM</span>
             </div>
 
             {/* Coluna Esquerda: Ilustração */}

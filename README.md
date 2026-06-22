@@ -105,6 +105,7 @@ Repositório: `https://github.com/FeCruz0/gerenciador-secretaria-municipal`
 
 - `ROADMAP_INERTIA_REACT.md` — roadmap de migração Inertia + React (principal)
 - `docs/roadmap.md` — prioridades e evolução do projeto
+- `docs/multi-organ-architecture.md` — documentação da arquitetura multi-órgão e hierarquia
 - `docs/vite-migration-plan.md` — plano de migração Mix → Vite (concluído)
 - `LOGIN_PANEL_FIX.md` — correção do painel de auth pós-Vite
 

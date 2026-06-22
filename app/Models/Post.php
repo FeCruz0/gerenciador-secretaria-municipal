@@ -18,6 +18,7 @@ class Post extends Model implements Auditable
     protected $table = 'posts';
 
     protected $fillable = [
+        'organ_id',
         'type_post_id',
         'user_id',
         'title',
@@ -28,6 +29,16 @@ class Post extends Model implements Auditable
         'content',
         'active'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ(): BelongsTo
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     public function user(): BelongsTo
     {

@@ -123,7 +123,7 @@ export default function Dashboard({ auth, unit }) {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-100 text-lg">{unit.name}</h3>
-                                        <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">{unit.sigla || 'SEMAS'}</p>
+                                        <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">{unit.sigla || 'GESEM'}</p>
                                     </div>
                                 </div>
 

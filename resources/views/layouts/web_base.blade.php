@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SEMAS') }}</title>
+    <title>{{ app()->has('active_organ') ? app('active_organ')->sigla : 'Prefeitura Municipal' }}</title>
 
     @laravelPWA
 
@@ -28,7 +28,94 @@
     @component('web.components.styles')
 
     @endcomponent
+
+    @if(app()->has('active_organ'))
+        @php
+            $themeColor = app('active_organ')->theme_color_hex;
+        @endphp
+        <style>
+            /* Dynamic Theme Color Overrides */
+            a:hover,
+            #topbar .contact-info a:hover,
+            #topbar .social-links a:hover,
+            .nav-menu .active > a,
+            .nav-menu a:hover,
+            .nav-menu li:hover > a,
+            .nav-menu .drop-down ul .active > a,
+            .nav-menu .drop-down ul a:hover,
+            .nav-menu .drop-down ul li:hover > a,
+            #hero .btn-get-started:hover,
+            #footer .footer-top .footer-links ul a:hover,
+            .submenu2 a:hover,
+            .submenu2 .active > a {
+                color: {{ $themeColor }} !important;
+            }
+
+            .back-to-top,
+            #hero .btn-get-started,
+            .rounded-button,
+            .btn-success {
+                background-color: {{ $themeColor }} !important;
+                border-color: {{ $themeColor }} !important;
+            }
+
+            .back-to-top:hover,
+            .rounded-button:hover {
+                background-color: {{ $themeColor }} !important;
+                filter: brightness(1.1);
+            }
+
+            #topbar .contact-info i,
+            .mobile-nav-toggle i,
+            #footer .footer-top .footer-links ul i {
+                color: {{ $themeColor }} !important;
+            }
+
+            #footer .footer-top {
+                border-top: 3px solid {{ $themeColor }} !important;
+            }
+
+            #footer .footer-top .social-links a {
+                background: {{ $themeColor }} !important;
+            }
+
+            #footer .footer-top .social-links a:hover {
+                filter: brightness(1.1);
+            }
+
+            .mobile-nav-overly {
+                background: {{ $themeColor }}a2 !important; /* with alpha opacity */
+            }
+            
+            .mobile-nav a {
+                color: {{ $themeColor }} !important;
+            }
+            
+            #footer .footer-top h4 {
+                color: {{ $themeColor }} !important;
+                filter: brightness(1.2);
+            }
+        </style>
+    @endif
 </head>
+
+    @php
+        $logoUrl = '';
+        if (app()->has('active_organ')) {
+            $logoPath = app('active_organ')->logo_path;
+            if (str_starts_with($logoPath, 'http')) {
+                $logoUrl = $logoPath;
+            } elseif (file_exists(public_path('assets-web/img/' . $logoPath))) {
+                $logoUrl = asset('assets-web/img/' . $logoPath);
+            } elseif (file_exists(public_path('storage/images/organs/' . $logoPath))) {
+                $logoUrl = asset('storage/images/organs/' . $logoPath);
+            } else {
+                $logoUrl = asset('storage/images/units/' . ($unit->logo ?? ''));
+            }
+        } else {
+            $logoUrl = (isset($unit) && $unit->logo) ? asset('storage/images/units/' . $unit->logo) : asset('assets-web/img/pmac-governo.svg');
+        }
+    @endphp
 
     <body>
         <!-- ======= Top Bar ======= -->
@@ -54,13 +141,13 @@
 
             <div class="logo float-start d-none d-xl-block">
             <img class="img-profile"
-              src="{{isset($unit->logo) ? asset('storage/images/units/' . $unit->logo) : ''}}">
+              src="{{ $logoUrl }}">
               <!-- Uncomment below if you prefer to use an image logo -->
               <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
             </div>
             <div class="logo float-start d-lg-none">
               <img class="img-profile"
-                src="{{isset($unit->logo) ? asset('storage/images/units/' . $unit->logo) : ''}}">
+                src="{{ $logoUrl }}">
             </div>
 
             <nav class="nav-menu float-end d-none d-lg-block">
@@ -115,7 +202,7 @@
                   <a href="">Publicações</a>
                   <ul>
                     <li class="{{ (request()->is('publicacao/publicacoessemas')) || (request()->is('publicacao/publicacoessemas')) ? 'active' : '' }}">
-                      <a href="{{ route('web_publication.home') }}">Publicações SEMAS</a>
+                      <a href="{{ route('web_publication.home') }}">Publicações {{ app()->has('active_organ') ? app('active_organ')->sigla : 'Prefeitura Municipal' }}</a>
                     </li>
                     <li class="{{ (request()->is('publicacao/pesquisas')) || (request()->is('publicacao/pesquisas')) ? 'active' : '' }}">
                       <a href="{{ route('web_publication.researchs') }}">Pesquisas</a>
@@ -189,9 +276,9 @@
                     <iframe src="{{ isset($unit->google_maps_iframe) ? $unit->google_maps_iframe : '' }}" height="270" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
                 <div class="col-lg-3 col-md-6 footer-info">
-                    <img class="img-profile" src="{{isset($unit->logo) ? asset('storage/images/units/' . $unit->logo) : ''}}" style="width:197px;margin-left:-5px;">
+                    <img class="img-profile" src="{{ $logoUrl }}" style="width:197px;margin-left:-5px;">
                     <p><br>
-                        {{ isset($unit) ? $unit->sigla : ''}} <br>
+                        {{ app()->has('active_organ') ? app('active_organ')->sigla : (isset($unit) ? $unit->sigla : '') }} <br>
                         {{ isset($unit) ? $unit->address : '' }}<br>
                         {{ isset($unit->organization) ? $unit->operation : '' }}<br><br>
                     <strong>Whatsapp:</strong> {{ isset($unit->phone) ? $unit->phone : '' }}<br>
@@ -254,7 +341,7 @@
                     <h4>Publicação</h4>
                     <ul>
                     <li><i class="bx bx-chevron-right"></i>
-                        <a href="{{ route('web_publication.home') }}">Publicações SEMAS</a></li>
+                        <a href="{{ route('web_publication.home') }}">Publicações {{ app()->has('active_organ') ? app('active_organ')->sigla : 'Prefeitura Municipal' }}</a></li>
                     <li><i class="bx bx-chevron-right"></i>
                         <a href="{{ route('web_publication.researchs') }}">Pesquisas</a></li>
                     </ul>

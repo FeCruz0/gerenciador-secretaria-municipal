@@ -21,7 +21,7 @@
                         <p>Para entrar em contato com o setor de Poda  da  
                             Secretaria do Ambiente e Saneamento de Arraial do Cabo, 
                             preencha o formulário ou envie um e-mail para
-                            <a href="mailto:poda.semas@arraial.rj.gov.br">nosso contato</a>.</p>
+                            <a href="mailto:poda.gesem@arraial.rj.gov.br">nosso contato</a>.</p>
                         <p>ATENÇÃO</p>
                         <p>1. A abertura de processo referente à Poda pode ser
                             feita através do

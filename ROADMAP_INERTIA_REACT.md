@@ -203,6 +203,19 @@ Autenticação via sessão do Laravel, exatamente como com Blade.
 
 ---
 
+## ✅ Fase 10: Página Inicial (Home) Modular Configurável (Concluída)
+
+- [x] Criar migration e model `HomeModule` para tabela `home_modules`
+- [x] Criar e executar `HomeModuleSeeder` com os 4 módulos padrão
+- [x] Criar `HomeModuleController` para ações administrativas e adicionar rotas no `web.php`
+- [x] Criar tela administrativa em React em `resources/js/Pages/HomeModules/Index.jsx`
+- [x] Registrar permissão `MANAGE_HOME_MODULES` e vinculá-la a papéis e ao menu sidebar no `AdminLayout.jsx`
+- [x] Separar a home pública em partials Blade: `carousel_banners`, `shortcuts`, `news`, `contact_info`
+- [x] Refatorar `HomeWebController` e `home.blade.php` para carregar dados e renderizar os módulos na ordem do banco
+- [x] Validar funcionamento da ativação/desativação e reordenação e garantir que a suíte de testes passa com sucesso
+
+---
+
 ## 📌 Notas Importantes
 
 - **Docker:** Usar sempre `docker-compose exec -u sail laravel.test` para PHP/Artisan. Nunca usar `./vendor/bin/sail`.

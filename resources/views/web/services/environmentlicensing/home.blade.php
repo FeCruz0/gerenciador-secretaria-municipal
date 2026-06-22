@@ -31,7 +31,7 @@
                         <p>No Município de Arraial, os procedimentos de licenciamento são regidos pelo
                             Sistema Municipal de Licenciamento Ambiental e demais Procedimentos de
                             Controle Ambiental, tendo a Lei Municipal 1.544/07 juntamente com a Resolução
-                            conjunta SEMAS/SECOU Nº 001/22.
+                            conjunta GESEM/SECOU Nº 001/22.
                         </p>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
             </div>
             <div class="row">
                 <p>As denúncias de atividades irregulares devem ser feitas pelo
-                    <a href="mailto: fiscalizacaosemas@arraial.rj.gov.br">e-mail</a>,
+                    <a href="mailto: fiscalizacaogesem@arraial.rj.gov.br">e-mail</a>,
                     ou pelo link abaixo.</p></div>
             <div class="row">
                 <h5 class="card-title">Normas utilizadas no licenciamento:</h5>

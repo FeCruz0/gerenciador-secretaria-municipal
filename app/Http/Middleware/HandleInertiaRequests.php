@@ -35,7 +35,28 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Try to resolve active organ from route parameter if not already bound
+        if (!app()->has('active_organ')) {
+            $slug = $request->route('organ');
+            if ($slug) {
+                $organ = \App\Models\Organ::where('slug', $slug)->where('is_active', true)->first();
+                if ($organ) {
+                    app()->instance('active_organ', $organ);
+                }
+            }
+        }
+
+        $activeOrgan = app()->has('active_organ') ? app('active_organ') : null;
+
         return array_merge(parent::share($request), [
+            'active_organ' => $activeOrgan ? [
+                'id' => $activeOrgan->id,
+                'name' => $activeOrgan->name,
+                'sigla' => $activeOrgan->sigla,
+                'slug' => $activeOrgan->slug,
+                'theme_color_hex' => $activeOrgan->theme_color_hex,
+                'logo_path' => $activeOrgan->logo_path,
+            ] : null,
             'auth' => [
                 'user' => $request->user() ? [
                     'id' => $request->user()->id,

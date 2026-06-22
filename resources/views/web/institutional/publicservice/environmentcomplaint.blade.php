@@ -16,8 +16,8 @@
                         <p>Antes de fazer sua denúncia ambiental ou solicitar uma 
                             fiscalização ambiental leia atentamente as informações 
                             abaixo:</p>
-                        <p>DENÚNCIAS E FISCALIZAÇÕES DE COMPETÊNCIA DA SEMAS</p>
-                        <p>São de competência da SEMAS as denúncias e fiscalizações 
+                        <p>DENÚNCIAS E FISCALIZAÇÕES DE COMPETÊNCIA DA GESEM</p>
+                        <p>São de competência da GESEM as denúncias e fiscalizações 
                             ambientais de ações que envolvam:</p>
                             <div style="width:auto;">
                                 <img src="../../../img/content/denuncias-ambientais-1.png">
@@ -31,7 +31,7 @@
                         <p>Para entrar em contato com o setor de Fiscalização da  
                             Secretaria do Ambiente e Saneamento de Arraial do Cabo, 
                             preencha o formulário ou envie um e-mail para
-                            <a href="mailto:fiscalizacaosemas@arraial.rj.gov.br">nosso contato</a>.</p>
+                            <a href="mailto:fiscalizacaogesem@arraial.rj.gov.br">nosso contato</a>.</p>
                         <p>* Para denúncias de crimes ambientais, 
                             <a href="{{ route('web_services.fiscalization') }}">acesse o link</a>.</p>
                     </div>

@@ -23,8 +23,19 @@ class Banner extends Model implements Auditable
         'banner_type_id',
         'title',
         'image',
-        'status'
+        'status',
+        'organ_id'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ(): BelongsTo
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     protected $dates = [
         'deleted_at'

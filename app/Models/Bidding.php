@@ -39,8 +39,19 @@ class Bidding extends Model implements Auditable
         'realized_at',
         'local',
         'content',
-        'status'
+        'status',
+        'organ_id'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new \App\Scopes\OrganScope);
+    }
+
+    public function organ(): BelongsTo
+    {
+        return $this->belongsTo(Organ::class);
+    }
 
     protected $cascadeDeletes = ['bidding_agreements'];
     protected $dates = [
