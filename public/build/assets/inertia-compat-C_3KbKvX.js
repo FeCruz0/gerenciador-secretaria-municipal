@@ -1,0 +1,1 @@
+import{n as e}from"./app-BN_H7X3O.js";var t=e;export{t};

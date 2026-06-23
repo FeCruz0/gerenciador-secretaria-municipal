@@ -22,7 +22,7 @@ RUN apt-get update \
        pdo pdo_mysql pdo_pgsql pgsql gd imap zip bcmath soap intl ldap opcache \
     && pecl install redis msgpack igbinary \
     && docker-php-ext-enable redis msgpack igbinary \
-    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
     && apt-get -y autoremove \

@@ -1,0 +1,1 @@
+import{s as e,t}from"./app-BN_H7X3O.js";e();var n=t();function r({roles:e}){return(0,n.jsxs)(`div`,{style:{padding:`2rem`,fontFamily:`sans-serif`},children:[(0,n.jsx)(`h1`,{children:`Criar Usuário`}),(0,n.jsx)(`p`,{children:`Selecione um perfil de acesso:`}),(0,n.jsx)(`ul`,{children:Object.keys(e).map(t=>(0,n.jsx)(`li`,{children:e[t]},t))})]})}export{r as default};
