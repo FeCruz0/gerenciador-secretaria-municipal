@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUsersRequest;
 use App\Http\Requests\Admin\UpdateUsersRequest;
 use App\Models\User;
+use App\Models\Organ;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class UsersController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $users = User::all();
+        $users = User::with(['roles', 'organ'])->get();
 
         return Inertia::render('Users/Index', [
             'users' => $users
@@ -35,10 +36,12 @@ class UsersController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $roles = ModelsRole::get()->pluck('name', 'name'); 
+        $roles = ModelsRole::with('permissions')->get();
+        $organs = Organ::where('is_active', true)->get(['id', 'name', 'sigla']);
 
         return Inertia::render('Users/Create', [
-            'roles' => $roles
+            'roles' => $roles,
+            'organs' => $organs
         ]);
     }
 
@@ -48,14 +51,19 @@ class UsersController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $user = User::create([
-            'name'=>request('name'),
-            'email'=>request('email'),
+        $data = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+        ];
 
-             //hash your password
+        if (app()->bound('active_organ')) {
+            $data['organ_id'] = app('active_organ')->id;
+        } else {
+            $data['organ_id'] = $request->input('organ_id');
+        }
 
-            'password'=>Hash::make(request('password'))
-        ]);
+        $user = User::create($data);
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->assignRole($roles);
 
@@ -68,11 +76,14 @@ class UsersController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $roles = ModelsRole::get()->pluck('name', 'name');
+        $user->load('roles');
+        $roles = ModelsRole::with('permissions')->get();
+        $organs = Organ::where('is_active', true)->get(['id', 'name', 'sigla']);
 
         return Inertia::render('Users/Edit', [
             'user' => $user,
-            'roles' => $roles
+            'roles' => $roles,
+            'organs' => $organs
         ]);
     }
 
@@ -82,12 +93,19 @@ class UsersController extends Controller
             abort(403);
         }
         $update = [
-            'name'=>request('name'),
-            'email'=>request('email'),
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
         ];
-        if($request->get('password')){
-            $update['password'] =Hash::make($request->get('password'));
+        if ($request->input('password')) {
+            $update['password'] = Hash::make($request->input('password'));
         }
+
+        if (app()->bound('active_organ')) {
+            $update['organ_id'] = app('active_organ')->id;
+        } else {
+            $update['organ_id'] = $request->input('organ_id');
+        }
+
         $user->update($update);
 
         $roles = $request->input('roles') ? $request->input('roles') : [];
