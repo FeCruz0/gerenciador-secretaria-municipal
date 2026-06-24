@@ -1,0 +1,1 @@
+import{s as e,t}from"./app-DO1PmW7K.js";e();var n=t();function r({ombudsman:e,unit:t}){return(0,n.jsxs)(`div`,{style:{padding:`2rem`,fontFamily:`sans-serif`},children:[(0,n.jsx)(`h1`,{children:`Relatórios da Ouvidoria`}),(0,n.jsxs)(`p`,{children:[`Unidade: `,t?.name]})]})}export{r as default};

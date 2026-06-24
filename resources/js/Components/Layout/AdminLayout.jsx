@@ -17,7 +17,8 @@ import {
     LogOut,
     Menu,
     User as UserIcon,
-    Sliders
+    Sliders,
+    Shield
 } from 'lucide-react';
 
 export default function AdminLayout({ children, title }) {
@@ -43,6 +44,7 @@ export default function AdminLayout({ children, title }) {
         { label: 'Módulos da Home', routeName: 'home_modules.index', icon: Sliders, permission: 'Gerenciar Módulos da Home' },
         { label: 'Órgãos & Subsecretarias', routeName: 'orgaos.index', icon: Building2, permission: 'Gerenciar Entidades' },
         { label: 'Usuários', routeName: 'users.index', icon: Settings, permission: 'Ver e Listar Usuários' },
+        { label: 'Regras e Perfis', routeName: 'roles.index', icon: Shield, permission: 'Ver e Listar Regras' },
     ];
 
     const isRouteActive = (routeName) => {

@@ -123,4 +123,14 @@ enum Permission: string
 
     // Gerenciar Entidades (Órgãos/Subsecretarias)
     case MANAGE_ENTITIES = 'Gerenciar Entidades';
+
+    // Regras e Perfis
+    case VIEW_ROLES = 'Ver e Listar Regras';
+    case CREATE_ROLES = 'Criar Regras';
+    case EDIT_ROLES = 'Editar Regras';
+    case DELETE_ROLES = 'Deletar Regras';
+
+    // Acesso de Desenvolvedor
+    case VIEW_DEVELOPER_MENU = 'Ver Menu de Desenvolvedor';
 }
+
